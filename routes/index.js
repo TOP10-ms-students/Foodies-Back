@@ -8,6 +8,7 @@ import recipesRouter from "./recipes-router.js";
 
 const router = Router();
 
+router.use("/authRouter", usersRouter);
 router.use("/users", usersRouter);
 router.use("/categories", categoriesRouter);
 router.use("/areas", areasRouter);
