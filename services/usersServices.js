@@ -1,5 +1,6 @@
 import db from "../db/models/index.cjs";
 import bcrypt from "bcrypt";
+import {AppError, errorTypes} from "../errors/appError.js";
 
 export const findUser = (query) => db.Users.findOne(query);
 export const signup = async (data) => {
@@ -8,7 +9,7 @@ export const signup = async (data) => {
 
         const existingUser = await findUser({where: {email}});
         if (existingUser) {
-            throw new Error("Email in use");
+            throw new AppError(errorTypes.ALREADY_EXIST, "Email in use");
         }
 
         const hashPassword = await bcrypt.hash(password, 10);
