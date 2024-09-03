@@ -1,6 +1,7 @@
 import gravatar from "gravatar";
 import * as usersServices from "../services/usersServices.js";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
+import {AppError, errorTypes} from "../errors/appError.js";
 import "dotenv/config";
 
 const signup = async (req, res, next) => {
@@ -17,7 +18,7 @@ const signup = async (req, res, next) => {
         });
     } catch (error) {
         if (error?.message === "Email in use") {
-            return res.status(409).json({message: error.message});
+            throw new AppError(errorTypes.ALREADY_EXIST, error.message);
         }
         next(error);
     }
