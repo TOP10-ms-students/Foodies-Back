@@ -1,11 +1,16 @@
-import Users from "../db/models/users.cjs";
 import db from "../db/models/index.cjs";
 import bcrypt from "bcrypt";
 
-export const findUser = (query) => Users.findOne(query);
+export const findUser = (query) => db.Users.findOne(query);
 export const signup = async (data) => {
     try {
-        const {password} = data;
+        const {email, password} = data;
+
+        const existingUser = await findUser({where: {email}});
+        if (existingUser) {
+            throw new Error("Email in use");
+        }
+
         const hashPassword = await bcrypt.hash(password, 10);
         return await db.Users.create({...data, password: hashPassword});
     } catch (error) {
