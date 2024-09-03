@@ -17,7 +17,7 @@ const signup = async (req, res, next) => {
             },
         });
     } catch (error) {
-        if (error?.message === "Email in use") {
+        if (errorTypes.ALREADY_EXIST) {
             throw new AppError(errorTypes.ALREADY_EXIST, error.message);
         }
         next(error);

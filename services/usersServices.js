@@ -16,7 +16,7 @@ export const signup = async (data) => {
         return await db.Users.create({...data, password: hashPassword});
     } catch (error) {
         if (error?.parent?.code === "23505") {
-            error.message = "Email in use";
+            throw new AppError(errorTypes.ALREADY_EXIST, "Email in use");
         }
         throw error;
     }
