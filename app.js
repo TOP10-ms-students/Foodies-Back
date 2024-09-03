@@ -31,8 +31,15 @@ const server = app.listen(process.env.PORT, () => {
 
 db.sequelize
     .authenticate()
-    .then(() => {
+    .then(async () => {
         console.log("Database connection successful");
+
+        if (process.env.INIT_DATA) {
+            await db.sequelize.sync({ force: true });
+            const { initialize } = await import("./db/seeders/initialize-data.js");
+            await initialize(db.sequelize);
+            console.log("Database initialized with data");
+        }
     })
     .catch((error) => {
         console.error("Unable to connect to the database", error);
