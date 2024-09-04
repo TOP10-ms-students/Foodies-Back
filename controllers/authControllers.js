@@ -1,28 +1,20 @@
 import gravatar from "gravatar";
-import * as usersServices from "../services/usersServices.js";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
-import {AppError, errorTypes} from "../errors/appError.js";
-import "dotenv/config";
+import {UsersServices} from "../services/usersServices.js";
 
-const signup = async (req, res, next) => {
-    try {
-        const {...userData} = req.body;
-        const gravatarUrl = gravatar.url(userData.email, {s: "250"}, true);
-        const newUser = await usersServices.signup({...userData, avatarURL: gravatarUrl,});
+const service = new UsersServices();
 
-        res.status(201).json({
-            user: {
-                name: newUser.name,
-                email: newUser.email,
-            },
-        });
-    } catch (error) {
-        if (errorTypes.ALREADY_EXIST) {
-            throw new AppError(errorTypes.ALREADY_EXIST, error.message);
-        }
-        next(error);
-    }
-};
+async function signup(req, res) {
+    const {...userData} = req.body;
+    const gravatarUrl = gravatar.url(userData.email, {s: "250"}, true);
+    const newUser = await service.signup({...userData, avatar: gravatarUrl,});
+    res.status(201).json({
+        user: {
+            name: newUser.name,
+            email: newUser.email,
+        },
+    });
+}
 
 export default {
     signup: ctrlWrapper(signup),

@@ -1,23 +1,25 @@
-import db from "../db/models/index.cjs";
-import bcrypt from "bcrypt";
 import {AppError, errorTypes} from "../errors/appError.js";
+import bcrypt from "bcrypt";
+import db from "../db/models/index.cjs";
 
-export const findUser = (query) => db.Users.findOne(query);
-export const signup = async (data) => {
-    try {
-        const {email, password} = data;
+export class UsersServices {
+    secret = process.env.JWT_SECRET;
 
-        const existingUser = await findUser({where: {email}});
-        if (existingUser) {
+    async signup(data) {
+        const user = await db.Users.findOne({
+            where: {
+                email: data.email,
+            },
+        });
+        if (user) {
             throw new AppError(errorTypes.ALREADY_EXIST, "Email in use");
         }
 
-        const hashPassword = await bcrypt.hash(password, 10);
-        return await db.Users.create({...data, password: hashPassword});
-    } catch (error) {
-        if (error?.parent?.code === "23505") {
-            throw new AppError(errorTypes.ALREADY_EXIST, "Email in use");
-        }
-        throw error;
+        const hashPassword = await bcrypt.hash(data.password, 10);
+        const newUser = await db.Users.create({
+            ...data,
+            password: hashPassword,
+        });
+        return newUser;
     }
-};
+}
