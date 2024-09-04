@@ -43,7 +43,7 @@ export class UsersService {
     }
 
     async getCurrentUser(userId) {
-        const user = await db.User.findOne({
+        const user = await db.Users.findOne({
             where: {
                 id: userId,
             },

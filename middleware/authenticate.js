@@ -17,7 +17,7 @@ const authenticate = async (req, res, next) => {
     const [bearer, token] = authorization.split(" ");
 
     if (bearer !== "Bearer") {
-        return next(new ApiError(401, "Bearer missing"));
+        return next(new ApiError(401, "Invalid token"));
     }
 
     try {
