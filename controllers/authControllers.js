@@ -16,6 +16,19 @@ async function signup(req, res) {
     });
 }
 
+async function logIn(req, res) {
+    const user = await service.logIn(req.body);
+    res.json({
+        user: {
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar,
+        },
+        token: user.token,
+    });
+}
+
 export default {
     signup: ctrlWrapper(signup),
+    logIn: ctrlWrapper(logIn),
 };
