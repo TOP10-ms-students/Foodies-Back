@@ -17,7 +17,7 @@ const authenticate = async (req, res, next) => {
     const [bearer, token] = authorization.split(" ");
 
     if (bearer !== "Bearer") {
-        return next(new ApiError(401, "Bearer missing"));
+        return next(new ApiError(401, "Invalid token"));
     }
 
     try {
@@ -35,6 +35,9 @@ const authenticate = async (req, res, next) => {
 
         next();
     } catch (error) {
+        if (error instanceof jwt.JsonWebTokenError) {
+            return next(new ApiError(401, "Invalid token signature"));
+        }
         if (error instanceof AppError) {
             return next(new ApiError(401, error.message));
         }

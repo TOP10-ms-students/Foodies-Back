@@ -28,7 +28,17 @@ async function logIn(req, res) {
     });
 }
 
+async function getCurrentUser(req, res) {
+    const user = await service.getCurrentUser(req.user.id);
+    res.json({
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+    });
+}
+
 export default {
     signup: ctrlWrapper(signup),
     logIn: ctrlWrapper(logIn),
+    getCurrentUser: ctrlWrapper(getCurrentUser),
 };
