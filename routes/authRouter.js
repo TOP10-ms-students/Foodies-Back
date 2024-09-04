@@ -4,10 +4,10 @@ import validateBody from "../middleware/validateBody.js";
 import {signupSchema} from "../schemas/usersSchemas.js";
 import upload from "../middleware/upload.js";
 
-const authMiddleWare = validateBody(signupSchema);
+const validateRequestBody = validateBody(signupSchema);
 
 const authRouter = express.Router();
 
-authRouter.post("/signup", upload.single("avatar"), authMiddleWare, authControllers.signup);
+authRouter.post("/signup", upload.single("avatar"), validateRequestBody, authControllers.signup);
 
 export default authRouter;
