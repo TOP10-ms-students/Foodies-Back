@@ -35,10 +35,16 @@ db.sequelize
         console.log("Database connection successful");
 
         if (process.env.INIT_DATA) {
-            await db.sequelize.sync({ force: true });
-            const { initialize } = await import("./db/seeders/initialize-data.js");
-            await initialize(db.sequelize);
-            console.log("Database initialized with data");
+            if (process.env.INIT_DATA === "force") {
+                await db.sequelize.sync({ force: true });
+
+                const { initialize } = await import("./db/seeders/initialize-data.js");
+                await initialize(db.sequelize);
+                console.log("Database initialized with data");
+            } else {
+                await db.sequelize.sync({ alter: true });
+                console.log("Database altered");
+            }
         }
     })
     .catch((error) => {

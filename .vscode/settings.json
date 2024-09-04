@@ -1,5 +1,6 @@
 {
   "editor.formatOnSaveMode": "modificationsIfAvailable",
   "editor.formatOnSave": true,
-  "js/ts.implicitProjectConfig.checkJs": true
+  "js/ts.implicitProjectConfig.checkJs": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
