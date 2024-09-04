@@ -14,6 +14,16 @@ function findId(items, name) {
  * @param {Sequelize} sequelize
  */
 export async function initialize(sequelize) {
+    const users = usersSource.map((user) => {
+        return {
+            id: user._id.$oid,
+            name: user.name,
+            avatar: user.avatar,
+            email: user.email,
+        };
+    });
+    await sequelize.model("Users").bulkCreate(users);
+
     const areas = areasSource.map((area) => {
         return {
             id: area._id.$oid,
@@ -31,16 +41,6 @@ export async function initialize(sequelize) {
         };
     });
     await sequelize.model("Ingredients").bulkCreate(ings);
-
-    const users = usersSource.map((user) => {
-        return {
-            id: user._id.$oid,
-            name: user.name,
-            avatar: user.avatar,
-            email: user.email,
-        };
-    });
-    await sequelize.model("Users").bulkCreate(users);
 
     const testims = testimonialsSource.map((testim) => {
         return {

@@ -19,8 +19,14 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 primaryKey: true,
             },
-            recipeId: DataTypes.STRING,
-            ingredientId: DataTypes.STRING,
+            recipeId: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            ingredientId: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
         },
         {
             sequelize,

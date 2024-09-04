@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
             models.Users.hasMany(models.Testimonials, {
                 foreignKey: {
                     name: "owner",
+                    allowNull: false,
                 },
             });
         }
@@ -24,8 +25,14 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 primaryKey: true,
             },
-            owner: DataTypes.STRING,
-            testimonial: DataTypes.TEXT,
+            owner: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            testimonial: {
+                type: DataTypes.TEXT,
+                allowNull: false,
+            },
         },
         {
             sequelize,

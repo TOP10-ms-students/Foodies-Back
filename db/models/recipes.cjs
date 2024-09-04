@@ -34,14 +34,38 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 primaryKey: true,
             },
-            title: DataTypes.STRING,
-            category: DataTypes.STRING,
-            owner: DataTypes.STRING,
-            area: DataTypes.STRING,
-            instructions: DataTypes.TEXT,
-            description: DataTypes.TEXT,
-            thumb: DataTypes.STRING,
-            time: DataTypes.INTEGER,
+            title: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            category: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            owner: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            area: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            instructions: {
+                type: DataTypes.TEXT,
+                allowNull: false,
+            },
+            description: {
+                type: DataTypes.TEXT,
+                allowNull: false,
+            },
+            thumb: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            time: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
         },
         {
             sequelize,
