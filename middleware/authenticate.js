@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import {ApiError} from "../errors/apiError.js";
-import {AppError} from "../errors/appError.js";
 import {UsersService} from "../services/usersServices.js";
 
 const {JWT_SECRET} = process.env;
@@ -16,16 +15,13 @@ const authenticate = async (req, res, next) => {
 
     const [bearer, token] = authorization.split(" ");
 
-    if (bearer !== "Bearer") {
-        return next(new ApiError(401, "Invalid token"));
+    if (bearer !== "Bearer" || !token) {
+        return next(new ApiError(401, "Invalid Authorization header format"));
     }
 
     try {
         const {id} = jwt.verify(token, JWT_SECRET);
         const user = await service.getCurrentUser(id);
-        if (!user) {
-            return next(new ApiError(404, "User not found"));
-        }
 
         if (!user.token || user.token !== token) {
             return next(new ApiError(401, "Invalid token"));
@@ -35,13 +31,7 @@ const authenticate = async (req, res, next) => {
 
         next();
     } catch (error) {
-        if (error instanceof jwt.JsonWebTokenError) {
-            return next(new ApiError(401, "Invalid token signature"));
-        }
-        if (error instanceof AppError) {
-            return next(new ApiError(401, error.message));
-        }
-        return next(new ApiError(500, error.message));
+        return next(new ApiError(401, error.message));
     }
 };
 
