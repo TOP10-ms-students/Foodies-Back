@@ -3,7 +3,6 @@ import getCategories from "../services/categoriesServices.js";
 
 async function getAllCategories(_, res) {
     const allCategories = await getCategories();
-
     res.json(allCategories);
 }
 
