@@ -6,4 +6,3 @@ const router = Router();
 router.get("/", areasContr.getAllCategories);
 
 export default router;
-
