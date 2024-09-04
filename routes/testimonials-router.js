@@ -1,5 +1,9 @@
 import { Router } from "express";
+import { getAllTestimonials } from "../controllers/testimonialsController.js";
 
-const router = Router();
+const testimonialsRouter = Router();
+testimonialsRouter.get("/", getAllTestimonials);
 
-export default router;
+export default testimonialsRouter;
+
+
