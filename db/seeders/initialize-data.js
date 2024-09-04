@@ -5,6 +5,7 @@ import ingredientsSource from "./initial-data/ingredients.json" assert { type: "
 import recipesSource from "./initial-data/recipes.json" assert { type: "json" };
 import testimonialsSource from "./initial-data/testimonials.json" assert { type: "json" };
 import usersSource from "./initial-data/users.json" assert { type: "json" };
+import passwordManager from "../../helpers/passwordManager.js";
 
 function findId(items, name) {
     return items.find((item) => item.name == name)._id.$oid;
@@ -20,6 +21,7 @@ export async function initialize(sequelize) {
             name: user.name,
             avatar: user.avatar,
             email: user.email,
+            password: passwordManager.hashPassword('Qwerty!@3'),
         };
     });
     await sequelize.model("Users").bulkCreate(users);
