@@ -1,8 +1,8 @@
 import gravatar from "gravatar";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
-import {UsersServices} from "../services/usersServices.js";
+import {UsersService} from "../services/usersServices.js";
 
-const service = new UsersServices();
+const service = new UsersService();
 
 async function signup(req, res) {
     const {...userData} = req.body;

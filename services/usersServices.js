@@ -2,7 +2,7 @@ import {AppError, errorTypes} from "../errors/appError.js";
 import bcrypt from "bcrypt";
 import db from "../db/models/index.cjs";
 
-export class UsersServices {
+export class UsersService {
     secret = process.env.JWT_SECRET;
 
     async signup(data) {
@@ -21,5 +21,17 @@ export class UsersServices {
             password: hashPassword,
         });
         return newUser;
+    }
+
+    async getCurrentUser(userId) {
+        const user = await db.User.findOne({
+            where: {
+                id: userId,
+            },
+        });
+        if (!user) {
+            throw new AppError(errorTypes.INVALID_TOKEN, "Not authorized");
+        }
+        return user;
     }
 }
