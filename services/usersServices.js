@@ -1,6 +1,7 @@
 import {AppError, errorTypes} from "../errors/appError.js";
 import bcrypt from "bcrypt";
 import db from "../db/models/index.cjs";
+import jwt from "jsonwebtoken";
 
 export class UsersService {
     secret = process.env.JWT_SECRET;
@@ -23,6 +24,24 @@ export class UsersService {
         return newUser;
     }
 
+    async logIn(data) {
+        const user = await db.Users.findOne({
+            where: {
+                email: data.email,
+            },
+        });
+        if (!user) {
+            throw new AppError(errorTypes.NOT_FOUND, "User not found");
+        }
+        const isValidPassword = await bcrypt.compare(data.password, user.password);
+        if (!isValidPassword) {
+            throw new AppError(errorTypes.INVALID_CRED, "Email or password is wrong");
+        }
+
+        user.token = jwt.sign({ id: user.id }, this.secret, { expiresIn: "24h" });
+        return await user.save();
+    }
+
     async getCurrentUser(userId) {
         const user = await db.User.findOne({
             where: {
@@ -30,7 +49,7 @@ export class UsersService {
             },
         });
         if (!user) {
-            throw new AppError(errorTypes.INVALID_TOKEN, "Not authorized");
+            throw new AppError(errorTypes.NOT_FOUND, "User not found");
         }
         return user;
     }

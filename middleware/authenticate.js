@@ -24,7 +24,7 @@ const authenticate = async (req, res, next) => {
         const {id} = jwt.verify(token, JWT_SECRET);
         const user = await service.getCurrentUser(id);
         if (!user) {
-            return next(new ApiError(401, "User not found"));
+            return next(new ApiError(404, "User not found"));
         }
 
         if (!user.token || user.token !== token) {
