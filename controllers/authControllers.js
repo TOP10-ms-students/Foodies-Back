@@ -29,8 +29,8 @@ async function logIn(req, res) {
 }
 
 async function logout(req, res) {
-    const { user } = req;
-    await service.updateUser(user, { token: null });
+    const {id} = req.user;
+    await service.updateUser({id}, {token: null});
     res.status(204).send();
 }
 
