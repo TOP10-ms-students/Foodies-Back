@@ -1,9 +1,10 @@
 import { ApiError } from "../errors/apiError.js";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
 import recipesServices from "../services/recipesServices.js";
+import appConfig from "../config/appConfig.js";
 
 const getAllRecipes = async (req, res) => {
-    const { page = 1, limit = 10, category, ingredient, area } = req.query;
+    const { page = appConfig.DEFAULT_PAGE, limit = appConfig.DEFAULT_LIMIT, category, ingredient, area } = req.query;
 
     const query = {
         category,

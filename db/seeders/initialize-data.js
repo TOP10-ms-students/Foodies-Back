@@ -5,6 +5,7 @@ import ingredientsSource from "./initial-data/ingredients.json" assert { type: "
 import recipesSource from "./initial-data/recipes.json" assert { type: "json" };
 import testimonialsSource from "./initial-data/testimonials.json" assert { type: "json" };
 import usersSource from "./initial-data/users.json" assert { type: "json" };
+import passwordManager from "../../helpers/passwordManager.js";
 
 function findId(items, name) {
     return items.find((item) => item.name == name)._id.$oid;
@@ -14,6 +15,17 @@ function findId(items, name) {
  * @param {Sequelize} sequelize
  */
 export async function initialize(sequelize) {
+    const users = usersSource.map((user) => {
+        return {
+            id: user._id.$oid,
+            name: user.name,
+            avatar: user.avatar,
+            email: user.email,
+            password: passwordManager.hashPassword('Qwerty!@3'),
+        };
+    });
+    await sequelize.model("Users").bulkCreate(users);
+
     const areas = areasSource.map((area) => {
         return {
             id: area._id.$oid,
@@ -31,16 +43,6 @@ export async function initialize(sequelize) {
         };
     });
     await sequelize.model("Ingredients").bulkCreate(ings);
-
-    const users = usersSource.map((user) => {
-        return {
-            id: user._id.$oid,
-            name: user.name,
-            avatar: user.avatar,
-            email: user.email,
-        };
-    });
-    await sequelize.model("Users").bulkCreate(users);
 
     const testims = testimonialsSource.map((testim) => {
         return {
@@ -74,8 +76,8 @@ export async function initialize(sequelize) {
     });
     await sequelize.model("Recipes").bulkCreate(recipes);
 
-    const recipeIngredients = recipesSource.flatMap((recip) => {
-        return recip.ingredients.map((ing) => {
+    const recipeIngredients = recipesSource.flatMap(recip => {
+        return recip.ingredients.map(ing => {
             return {
                 recipeId: recip._id.$oid,
                 ingredientId: ing.id,
