@@ -43,9 +43,10 @@ export class UsersService {
     }
 
     async getCurrentUser(userId) {
+        const id = typeof userId === 'object' ? userId.id : userId;
         const user = await db.Users.findOne({
             where: {
-                id: userId,
+                id: id,
             },
         });
         if (!user) {
@@ -53,4 +54,13 @@ export class UsersService {
         }
         return user;
     }
+
+    async updateUser(query, data) {
+        const user = await this.getCurrentUser(query);
+        return user.update(data);
+    }
 }
+
+export const getUser = async (query) => {
+    return db.Users.findOne({ where: query, rejectOnEmpty: true });
+};
