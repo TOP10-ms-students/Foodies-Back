@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: "ingredientId",
                 otherKey: "recipeId",
             });
+            models.Ingredients.belongsToMany(models.Recipes, {
+                through: "RecipeIngredients",
+            });
         }
     }
     Ingredients.init(
@@ -24,9 +27,18 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 primaryKey: true,
             },
-            name: DataTypes.STRING,
-            desc: DataTypes.TEXT,
-            img: DataTypes.STRING,
+            name: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            desc: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+            },
+            img: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
         },
         {
             sequelize,

@@ -38,14 +38,27 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 primaryKey: true,
             },
-            name: DataTypes.STRING,
-            avatar: DataTypes.STRING,
+            name: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            avatar: {
+                type: DataTypes.STRING,
+                defaultValue: null,
+            },
             email: {
                 type: DataTypes.STRING,
+                allowNull: false,
                 unique: true,
             },
-            password: DataTypes.STRING,
-            token: DataTypes.STRING,
+            password: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            token: {
+                type: DataTypes.STRING,
+                defaultValue: null,
+            },
         },
         {
             sequelize,
