@@ -5,6 +5,8 @@ import "dotenv/config";
 
 import appRouter from "./routes/index.js";
 import db from "./db/models/index.cjs";
+import { generateOpenApi } from "./openApiGenerator.js";
+import swaggerUi from "swagger-ui-express";
 
 const app = express();
 
@@ -14,6 +16,13 @@ app.use(express.json());
 app.use(express.static("public"));
 
 app.use("/api", appRouter);
+
+try {
+    const openApiSpec = generateOpenApi(app);
+    app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiSpec));
+} catch (error) {
+    console.error("Error generating OpenAPI specification", error);
+}
 
 app.use((_, res) => {
     res.status(404).json({ message: "Route not found" });
