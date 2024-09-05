@@ -54,3 +54,7 @@ export class UsersService {
         return user;
     }
 }
+
+export const getUser = async (query) => {
+    return db.Users.findOne({ where: query, rejectOnEmpty: true });
+};
