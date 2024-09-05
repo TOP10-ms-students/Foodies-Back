@@ -24,7 +24,15 @@ const getOneRecipe = async (req, res) => {
     res.json(result);
 };
 
+const getPopularRecipes = async (req, res) => {
+    const { limit = 4 } = req.query;
+
+    const result = await recipesServices.listPopularRecipes({ limit });
+    res.json(result);
+};
+
 export default {
     getAllRecipes: ctrlWrapper(getAllRecipes),
     getOneRecipe: ctrlWrapper(getOneRecipe),
+    getPopularRecipes: ctrlWrapper(getPopularRecipes),
 };

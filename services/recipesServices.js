@@ -1,3 +1,5 @@
+import { Sequelize } from "sequelize";
+
 import db from "../db/models/index.cjs";
 
 const listRecipes = (query = {}, { page, limit }) => {
@@ -30,7 +32,34 @@ const listRecipes = (query = {}, { page, limit }) => {
 
 const getOneRecipe = query => db.Recipes.findOne({ where: query });
 
+const listPopularRecipes = ({ limit }) => {
+    return db.Recipes.findAll({
+        attributes: [
+            "id",
+            "title",
+            "category",
+            "owner",
+            "area",
+            "instructions",
+            "description",
+            "thumb",
+            "time",
+            [Sequelize.fn("COUNT", Sequelize.col("FavoriteRecipes.userId")), "favorite_count"],
+        ],
+        include: [
+            {
+                model: db.FavoriteRecipes,
+                attributes: [],
+            },
+        ],
+        group: ["Recipe.id"],
+        order: [[Sequelize.literal("favorite_count"), "DESC"]],
+        limit: Number(limit),
+    });
+};
+
 export default {
     listRecipes,
     getOneRecipe,
+    listPopularRecipes,
 };
