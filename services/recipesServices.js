@@ -30,7 +30,22 @@ const listRecipes = (query = {}, { page, limit }) => {
 
 const getOneRecipe = query => db.Recipes.findOne({ where: query });
 
+const findAllUserRecipes = query => db.Recipes.findAll({ where: query });
+
+const deleteUserRecipe = async (userId, recipeId) => {
+    const recipe = await getOneRecipe({ id: recipeId, owner: userId });
+
+    if (!recipe) {
+        return false;
+    }
+
+    await recipe.destroy();
+    return true;
+};
+
 export default {
     listRecipes,
     getOneRecipe,
+    deleteUserRecipe,
+    findAllUserRecipes,
 };
