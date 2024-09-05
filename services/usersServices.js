@@ -57,7 +57,7 @@ export class UsersService {
 
     async updateUser(query, data) {
         const user = await this.getCurrentUser(query);
-        return user ? user.update(data, {returning: true}) : null;
+        return user.update(data);
     }
 }
 
