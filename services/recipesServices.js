@@ -30,24 +30,24 @@ const listRecipes = (query = {}, { page, limit }) => {
 
 const getOneRecipe = query => db.Recipes.findOne({ where: query });
 
-const addFavorietsRecipes = async data => {
+const addFavoriteRecipe = async data => {
     const { recipeId } = data;
 
-    const existingFavorite = await db.Favorite.findOne({
+    const existingFavorite = await db.FavoriteRecipes.findOne({
         where: { recipeId },
     });
 
     if (existingFavorite) {
-        return db.Favorite.destroy({
+        return db.FavoriteRecipes.destroy({
             where: { recipeId },
         });
     }
 
-    await db.Favorite.create(data);
+    await db.FavoriteRecipes.create(data);
 };
 
 export default {
     listRecipes,
     getOneRecipe,
-    addFavorietsRecipes,
+    addFavoriteRecipe,
 };
