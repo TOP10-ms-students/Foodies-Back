@@ -74,8 +74,8 @@ export async function initialize(sequelize) {
     });
     await sequelize.model("Recipes").bulkCreate(recipes);
 
-    const recipeIngredients = recipesSource.flatMap((recip) => {
-        return recip.ingredients.map((ing) => {
+    const recipeIngredients = recipesSource.flatMap(recip => {
+        return recip.ingredients.map(ing => {
             return {
                 recipeId: recip._id.$oid,
                 ingredientId: ing.id,
