@@ -1,12 +1,10 @@
 import { ApiError } from "../errors/apiError.js";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
 import recipesServices from "../services/recipesServices.js";
-import recipesConfig from "../config/config.js";
+import appConfig from "../config/appConfig.js";
 
 const getAllRecipes = async (req, res) => {
-  const { DEFAULT_PAGE, DEFAULT_LIMIT } = recipesConfig;
-
-  const { page = DEFAULT_PAGE, limit = DEFAULT_LIMIT, category, ingredient, area } = req.query;
+    const { page = appConfig.DEFAULT_PAGE, limit = appConfig.DEFAULT_LIMIT, category, ingredient, area } = req.query;
 
     const query = {
         category,

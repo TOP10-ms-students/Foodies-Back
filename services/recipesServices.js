@@ -1,13 +1,12 @@
 import db from "../db/models/index.cjs";
-import recipesConfig from "../config/config.js";
+import appConfig from "../config/appConfig.js";
 import { ApiError } from "../errors/apiError.js";
 
 const listRecipes = (query = {}, { page: _page, limit: _limit }) => {
     const { category, ingredient, area } = query;
-    const { DEFAULT_PAGE, DEFAULT_LIMIT } = recipesConfig;
 
-    const page = isNaN(Number(_page)) ? DEFAULT_PAGE : Number(_page);
-    const limit = isNaN(Number(_limit)) ? DEFAULT_LIMIT : Number(_limit);
+    const page = Number(_page) || appConfig.DEFAULT_PAGE;
+    const limit = Number(_limit) || appConfig.DEFAULT_LIMIT;
 
     const where = {};
     if (category) {
@@ -17,11 +16,13 @@ const listRecipes = (query = {}, { page: _page, limit: _limit }) => {
         where.area = area;
     }
 
-    const ingredientFilter = {
-        model: db.Ingredients,
-        where: { id: ingredient },
-        through: { attributes: [] },
-    };
+    const ingredientFilter = ingredient
+        ? {
+              model: db.Ingredients,
+              where: { id: ingredient },
+              through: { attributes: [] },
+          }
+        : null;
 
     return db.Recipes.findAll({
         where,
