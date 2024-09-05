@@ -1,5 +1,8 @@
 import { Router } from "express";
+import ingredientsControllers from "../controllers/ingredientsControllers.js";
 
-const router = Router();
+const ingredientsRouter = Router();
 
-export default router;
+ingredientsRouter.get("/", ingredientsControllers.getAllIngredients);
+
+export default ingredientsRouter;
