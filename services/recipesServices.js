@@ -58,7 +58,7 @@ const addFavoriteRecipe = async data => {
     });
 
     if (existingFavorite) {
-        return db.FavoriteRecipes.destroy({
+        return await db.FavoriteRecipes.destroy({
             where: { recipeId },
         });
     }
