@@ -1,5 +1,9 @@
 import { Router } from "express";
+import authenticate from "../middleware/authenticate.js";
+import recipesControllers from "../controllers/recipesControllers.js";
 
-const router = Router();
+const recipesRouter = Router();
 
-export default router;
+recipesRouter.delete("/favorite/:id", authenticate, recipesControllers.deleteFavoriteRecipe);
+
+export default recipesRouter;
