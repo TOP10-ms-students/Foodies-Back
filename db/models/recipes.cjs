@@ -20,8 +20,18 @@ module.exports = (sequelize, DataTypes) => {
                 },
             });
 
-            models.Ingredients.belongsToMany(models.Recipes, {
+            models.Recipes.belongsToMany(models.Ingredients, {
                 through: "RecipeIngredients",
+                as: "ingredients",
+                foreignKey: "recipeId",
+                otherKey: "ingredientId",
+            });
+
+            models.Recipes.belongsToMany(models.Users, {
+                through: "FavoriteRecipes",
+                as: "likedBy",
+                foreignKey: "userId",
+                otherKey: "recipeId",
             });
         }
     }
