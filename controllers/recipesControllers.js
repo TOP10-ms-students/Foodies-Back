@@ -23,7 +23,7 @@ const getOneRecipe = async (req, res) => {
     }
     res.json(result);
 };
-
+    
 const deleteRecipe = async (req, res) => {
     const { id: userId } = req.user;
 
@@ -32,7 +32,7 @@ const deleteRecipe = async (req, res) => {
     const result = await recipesServices.deleteUserRecipe(userId, recipeId);
     
     if (!result) {
-        return res.status(404).json({ message: "Recipe not found or its not your recipe." });
+        return new ApiError(404, `Recipe with id=${recipeId} not found in your recipes`);
     }
     
     return res.json({ message: "Recipe deleted successfully." });

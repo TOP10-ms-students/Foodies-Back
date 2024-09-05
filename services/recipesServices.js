@@ -1,4 +1,5 @@
 import db from "../db/models/index.cjs";
+import { AppError, errorTypes } from "../errors/appError.js";
 
 const listRecipes = (query = {}, { page, limit }) => {
     const { category, ingredient, area } = query;
@@ -36,7 +37,7 @@ const deleteUserRecipe = async (userId, recipeId) => {
     const recipe = await getOneRecipe({ id: recipeId, owner: userId });
 
     if (!recipe) {
-        return false;
+        return new AppError(errorTypes.NOT_FOUND);
     }
 
     await recipe.destroy();
