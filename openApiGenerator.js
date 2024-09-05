@@ -28,18 +28,19 @@ export function generateOpenApi(app) {
 
                 const layers = layer.route.stack.filter(layer => layer.name === "func" && layer.handle[schemaKey]);
                 const controller = layer.route.stack.find(layer => layer.handle[controllerKey]);
+                let bodyDefinition;
                 if (layers.length === 1) {
                     const schema = layers[0].handle[schemaKey];
                     const { swagger, components } = j2s(schema, apiComponents);
                     mergeComponents(apiComponents, components);
-                    return Object.keys(methods).map(method => ({
-                        path: path.join(basePath, nextPath),
-                        method,
-                        operationId: controller.handle.name,
-                        bodyDefinition: swagger,
-                    }));
+                    bodyDefinition = swagger;
                 }
-                return [];
+                return Object.keys(methods).map(method => ({
+                    path: path.join(basePath, nextPath),
+                    method,
+                    operationId: controller.handle.name,
+                    bodyDefinition,
+                }));
             });
 
         return routes.concat(apis);
