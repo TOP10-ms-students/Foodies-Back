@@ -43,10 +43,9 @@ export class UsersService {
     }
 
     async getCurrentUser(userId) {
-        const id = typeof userId === 'object' ? userId.id : userId;
         const user = await db.Users.findOne({
             where: {
-                id: id,
+                id: userId,
             },
         });
         if (!user) {
