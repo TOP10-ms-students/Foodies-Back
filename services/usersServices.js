@@ -53,4 +53,8 @@ export class UsersService {
         }
         return user;
     }
+
+    async updateUser(user, data) {
+        return await user.update(data);
+    }
 }

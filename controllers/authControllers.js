@@ -28,6 +28,12 @@ async function logIn(req, res) {
     });
 }
 
+async function logout(req, res) {
+    const { user } = req;
+    await service.updateUser(user, { token: null });
+    res.status(204).send();
+}
+
 async function getCurrentUser(req, res) {
     const user = await service.getCurrentUser(req.user.id);
     res.json({
@@ -40,5 +46,6 @@ async function getCurrentUser(req, res) {
 export default {
     signup: ctrlWrapper(signup),
     logIn: ctrlWrapper(logIn),
+    logout: ctrlWrapper(logout),
     getCurrentUser: ctrlWrapper(getCurrentUser),
 };
