@@ -17,13 +17,11 @@ const listRecipes = (query = {}, { page: _page, limit: _limit }) => {
         where.area = area;
     }
 
-    const ingredientFilter = ingredient
-        ? {
-              model: db.Ingredients,
-              where: { id: ingredient },
-              through: { attributes: [] },
-          }
-        : null;
+    const ingredientFilter = {
+        model: db.Ingredients,
+        where: { id: ingredient },
+        through: { attributes: [] },
+    };
 
     return db.Recipes.findAll({
         where,
