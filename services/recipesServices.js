@@ -1,5 +1,5 @@
 import db from "../db/models/index.cjs";
-import recipesConfig from "../config/recipes.js";
+import recipesConfig from "../config/config.js";
 import { ApiError } from "../errors/apiError.js";
 
 const listRecipes = (query = {}, { page: _page, limit: _limit }) => {
@@ -17,28 +17,23 @@ const listRecipes = (query = {}, { page: _page, limit: _limit }) => {
         where.area = area;
     }
 
-    const ingredientFilter = {
-        model: db.Ingredients,
-        where: { id: ingredient },
-        through: { attributes: [] },
-    };
+    const ingredientFilter = ingredient
+        ? {
+              model: db.Ingredients,
+              where: { id: ingredient },
+              through: { attributes: [] },
+          }
+        : null;
 
     return db.Recipes.findAll({
         where,
-        include: ingredient
-            ? [
-                  {
-                      model: db.Ingredients,
-                      where: { id: ingredient },
-                      through: { attributes: [] },
-                  },
-              ]
-            : [],
+        include: ingredientFilter ? [ingredientFilter] : [],
         order: [["id", "desc"]],
         limit,
         offset: (page - 1) * limit,
     });
 };
+
 
 const getOneRecipe = async query => {
     try {

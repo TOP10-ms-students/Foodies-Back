@@ -1,7 +1,7 @@
 import { ApiError } from "../errors/apiError.js";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
 import recipesServices from "../services/recipesServices.js";
-import recipesConfig from "../config/recipes.js";
+import recipesConfig from "../config/config.js";
 
 const getAllRecipes = async (req, res) => {
   const { DEFAULT_PAGE, DEFAULT_LIMIT } = recipesConfig;
