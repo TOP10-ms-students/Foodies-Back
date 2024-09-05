@@ -1,9 +1,8 @@
 import { Router } from "express";
-import { getAllTestimonials } from "../controllers/testimonialsController.js";
+import testimonialsController from "../controllers/testimonialsController.js";
 
 const testimonialsRouter = Router();
-testimonialsRouter.get("/", getAllTestimonials);
+
+testimonialsRouter.get("/", testimonialsController.getAllTestimonials);
 
 export default testimonialsRouter;
-
-
