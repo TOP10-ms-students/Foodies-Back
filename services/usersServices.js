@@ -54,3 +54,19 @@ export class UsersService {
         return user;
     }
 }
+
+const service = new UsersService();
+
+export const updateUser = async (query, data) => {
+    const user = await service.getCurrentUser(query);
+    if (!user) {
+        return null;
+    }
+    return db.User.update(data, {
+        returning: true,
+    });
+};
+
+export default {
+    updateUser,
+};
