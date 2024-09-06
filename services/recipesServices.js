@@ -1,8 +1,13 @@
 import { Sequelize } from "sequelize";
 import db from "../db/models/index.cjs";
+import appConfig from "../config/appConfig.js";
+import { ApiError } from "../errors/apiError.js";
 
-const listRecipes = (query = {}, { page, limit }) => {
+const listRecipes = (query = {}, { page: _page, limit: _limit }) => {
     const { category, ingredient, area } = query;
+
+    const page = Number(_page) || appConfig.DEFAULT_PAGE;
+    const limit = Number(_limit) || appConfig.DEFAULT_LIMIT;
 
     const where = {};
     if (category) {
@@ -12,24 +17,44 @@ const listRecipes = (query = {}, { page, limit }) => {
         where.area = area;
     }
 
+    const ingredientFilter = ingredient
+        ? {
+              model: db.Ingredients,
+              where: { id: ingredient },
+              through: { attributes: [] },
+          }
+        : null;
+
     return db.Recipes.findAll({
         where,
-        include: ingredient
-            ? [
-                  {
-                      model: db.Ingredients,
-                      where: { id: ingredient },
-                      through: { attributes: [] },
-                  },
-              ]
-            : [],
+        include: ingredientFilter ? [ingredientFilter] : [],
         order: [["id", "desc"]],
-        limit: Number(limit),
-        offset: Number(page - 1) * Number(limit),
+        limit,
+        offset: (page - 1) * limit,
     });
 };
 
-const getOneRecipe = query => db.Recipes.findOne({ where: query });
+const getOneRecipe = async query => {
+    try {
+        return await db.Recipes.findOne({
+            where: query,
+            rejectOnEmpty: true,
+        });
+    } catch (error) {
+        if (error instanceof db.Sequelize.EmptyResultError) {
+            throw new ApiError(404, "Recipe not found with the given query");
+        }
+        throw error;
+    }
+};
+
+const getFavorites = userId => {
+    const favoriteList = db.FavoriteRecipes.findAll({
+        where: { userId },
+    });
+
+    return favoriteList;
+};
 
 const listPopularRecipes = ({ limit }) => {
     return db.Recipes.findAll({
@@ -47,10 +72,6 @@ const listPopularRecipes = ({ limit }) => {
         ],
         include: [
             {
-                model: db.Ingredients,
-                through: { attributes: [] },
-            },
-            {
                 model: db.Users,
                 through: { attributes: [] },
                 require: false,
@@ -67,4 +88,5 @@ export default {
     listRecipes,
     getOneRecipe,
     listPopularRecipes,
+    getFavorites,
 };

@@ -1,9 +1,10 @@
 import { ApiError } from "../errors/apiError.js";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
 import recipesServices from "../services/recipesServices.js";
+import appConfig from "../config/appConfig.js";
 
 const getAllRecipes = async (req, res) => {
-    const { page = 1, limit = 10, category, ingredient, area } = req.query;
+    const { page = appConfig.DEFAULT_PAGE, limit = appConfig.DEFAULT_LIMIT, category, ingredient, area } = req.query;
 
     const query = {
         category,
@@ -29,10 +30,18 @@ const getPopularRecipes = async (req, res) => {
 
     const result = await recipesServices.listPopularRecipes({ limit });
     res.json(result);
+    
+const getFavoriteRecipes = async (req, res) => {
+    const { id: userId } = req.user;
+    const favoriteList = await recipesServices.getFavorites(userId);
+    res.json({
+        favoriteRecipes: favoriteList,
+    });
 };
 
 export default {
     getAllRecipes: ctrlWrapper(getAllRecipes),
     getOneRecipe: ctrlWrapper(getOneRecipe),
     getPopularRecipes: ctrlWrapper(getPopularRecipes),
+    getFavoriteRecipes: ctrlWrapper(getFavoriteRecipes),
 };

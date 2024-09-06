@@ -10,7 +10,8 @@ recipesRouter.get("/", recipesControllers.getAllRecipes);
 
 recipesRouter.get("/popular", recipesControllers.getPopularRecipes);
 
-recipesRouter.get("/:id", recipesControllers.getOneRecipe);
+recipesRouter.get("/favorite", authenticate, recipesControllers.getFavoriteRecipes);
 
+recipesRouter.get("/:id", recipesControllers.getOneRecipe);
 
 export default recipesRouter;
