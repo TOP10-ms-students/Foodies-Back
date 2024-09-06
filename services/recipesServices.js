@@ -1,5 +1,4 @@
 import { Sequelize } from "sequelize";
-
 import db from "../db/models/index.cjs";
 
 const listRecipes = (query = {}, { page, limit }) => {
@@ -44,15 +43,21 @@ const listPopularRecipes = ({ limit }) => {
             "description",
             "thumb",
             "time",
-            [Sequelize.fn("COUNT", Sequelize.col("FavoriteRecipes.userId")), "favorite_count"],
+            [Sequelize.fn("COUNT", Sequelize.col("Users.id")), "favorite_count"],
         ],
         include: [
             {
-                model: db.FavoriteRecipes,
-                attributes: [],
+                model: db.Ingredients,
+                through: { attributes: [] },
+            },
+            {
+                model: db.Users,
+                through: { attributes: [] },
+                require: false,
             },
         ],
-        group: ["Recipe.id"],
+        subQuery: false,
+        group: ["Recipes.id", "Users.id", "Ingredients.id"],
         order: [[Sequelize.literal("favorite_count"), "DESC"]],
         limit: Number(limit),
     });
