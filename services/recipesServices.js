@@ -49,6 +49,8 @@ const getOneRecipe = async query => {
     }
 };
 
+const postRecipe = data => db.Recipes.create(data);
+
 const getFavorites = userId => {
     const favoriteList = db.FavoriteRecipes.findAll({
         where: { userId },
@@ -101,6 +103,7 @@ const deleteUserRecipe = async (userId, recipeId) => {
 export default {
     listRecipes,
     getOneRecipe,
+    postRecipe,
     listPopularRecipes,
     deleteUserRecipe,
     findAllUserRecipes,
