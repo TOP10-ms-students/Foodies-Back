@@ -83,6 +83,7 @@ const listPopularRecipes = ({ limit }) => {
         order: [[Sequelize.literal("favorite_count"), "DESC"]],
         limit: Number(limit),
     });
+};
 
 const findAllUserRecipes = query => db.Recipes.findAll({ where: query });
 
