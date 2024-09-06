@@ -78,7 +78,7 @@ const listPopularRecipes = ({ limit }) => {
             },
         ],
         subQuery: false,
-        group: ["Recipes.id", "Users.id", "Ingredients.id"],
+        group: ["Recipes.id", "Users.id"],
         order: [[Sequelize.literal("favorite_count"), "DESC"]],
         limit: Number(limit),
     });

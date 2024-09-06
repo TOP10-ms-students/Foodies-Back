@@ -30,6 +30,7 @@ const getPopularRecipes = async (req, res) => {
 
     const result = await recipesServices.listPopularRecipes({ limit });
     res.json(result);
+}
     
 const getFavoriteRecipes = async (req, res) => {
     const { id: userId } = req.user;
