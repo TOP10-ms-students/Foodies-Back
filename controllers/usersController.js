@@ -1,9 +1,12 @@
-import ctrlWrapper from "../middleware/ctrlWrapper";
-import usersServices from "../services/usersServices";
-const { getAvatarPath, removeAvatarFile } = require("../helpers/getAvatarPath");
+import {UsersService} from "../services/usersServices.js";
+import ctrlWrapper from "../middleware/ctrlWrapper.js";
+import { getAvatarPath, removeAvatarFile } from "../helpers/getAvatarPath.js";
 
-const addAvatar = async (req, res) => {
+const service = new UsersService();
+
+async function addAvatar(req, res) {
     const { id, avatar: oldPath } = req.user;
+
     const avatarExtention = oldPath.split(".").pop();
 
     if (avatarExtention === "jpg") {
@@ -14,16 +17,15 @@ const addAvatar = async (req, res) => {
         }
     }
 
-    const avatarURL = await getAvatarPath(req.file);
-
-    const { avatarURL: newAvatarURL } = await usersServices.updateUser({ id }, { avatarURL });
+    const avatar = await getAvatarPath(req.file);
+    const { avatar: newAvatarURL } = await service.updateUser(id , { avatar });
 
     res.json({
         user: {
-            avatarURL: newAvatarURL,
+            avatar: newAvatarURL,
         },
     });
-};
+}
 
 export default {
     addAvatar: ctrlWrapper(addAvatar),
