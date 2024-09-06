@@ -53,20 +53,13 @@ export class UsersService {
         }
         return user;
     }
+
+    async updateUser(query, data) {
+        const user = await this.getCurrentUser(query);
+        return user.update(data);
+    }
 }
 
-const service = new UsersService();
-
-export const updateUser = async (query, data) => {
-    const user = await service.getCurrentUser(query);
-    if (!user) {
-        return null;
-    }
-    return db.User.update(data, {
-        returning: true,
-    });
-};
-
-export default {
-    updateUser,
+export const getUser = async (query) => {
+    return db.Users.findOne({ where: query, rejectOnEmpty: true });
 };
