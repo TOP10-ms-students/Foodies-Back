@@ -1,5 +1,22 @@
 import db from "../db/models/index.cjs";
 
+async function getFollowers(userId) {
+    return db.Followers.findAll({
+        where: {
+            userId,
+        },
+    });
+}
+
+async function getOneFollower(userId, followerId) {
+    return db.Followers.findOne({
+        where: {
+            userId,
+            followerId,
+        },
+    });
+}
+
 async function addFollower(followerId, userId) {
     const query = { followerId, userId };
     const follow = await db.Followers.findOne({
@@ -35,6 +52,8 @@ async function removeFollower(followerId, userId) {
 const followServices = {
     addFollower,
     removeFollower,
+    getFollowers,
+    getOneFollower,
 };
 
 export default followServices;
