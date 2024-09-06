@@ -1,11 +1,19 @@
+import { ApiError } from "../errors/apiError.js";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
 import followServices from "../services/followersServices.js";
 
-async function addNewFollower(req, res) {
+async function addNewFollower(req, res, next) {
     const { id: followerId } = req.params;
     const { id: userId } = req.user;
 
-    await followServices.addFollower({ followerId, userId });
+    if (followerId === userId) {
+        return next(new ApiError(400));
+    }
+
+    const followerAdd = await followServices.addFollower({ followerId, userId });
+    if (!followerAdd) {
+        return next(new ApiError(409, "Ready in your list"));
+    }
     res.status(201).json({
         message: `Follower id: ${followerId} added`,
     });
@@ -13,9 +21,7 @@ async function addNewFollower(req, res) {
 
 async function deleteFollower(req, res) {
     const { id: followerId } = req.params;
-    console.log(followerId);
     const { id: userId } = req.user;
-    console.log(userId);
 
     const delFollowerId = await followServices.removeFollower({ followerId, userId });
     res.json({

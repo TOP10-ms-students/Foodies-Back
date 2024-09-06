@@ -1,14 +1,21 @@
 import db from "../db/models/index.cjs";
 
-function addFollower(query) {
+async function addFollower(query) {
+    const follow = await db.Followers.findOne({
+        where: query,
+    });
+    
+    if (follow) {
+        return null
+    };
+
     return db.Followers.create(query);
-}
+};
 
 async function removeFollower(query) {
-    console.log(query.userId);
     const remFollower = await db.Users.findOne({
         where: {
-            id: query.userId,
+            id: query.followerId,
         },
     });
 
