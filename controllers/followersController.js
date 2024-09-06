@@ -6,14 +6,9 @@ async function getFollowers(req, res) {
     const { id: userId } = req.params;
 
     const followers = await followServices.getFollowers(userId);
-    if (!followers) {
-        return res.status(404).json({
-            message: "No followers found",
-        });
-    }
 
     res.json({
-        followers,
+        followers: followers || [],
     });
 }
 
@@ -23,9 +18,7 @@ async function getOneFollower(req, res) {
 
     const follower = await followServices.getOneFollower(userId, followerId);
     if (!follower) {
-        return res.status(404).json({
-            message: `Follower with id: ${followerId} not found`,
-        });
+        throw new ApiError(404, `Follower with id: ${followerId} not found`);
     }
 
     res.json({
