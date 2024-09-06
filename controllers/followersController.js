@@ -2,6 +2,27 @@ import { ApiError } from "../errors/apiError.js";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
 import followServices from "../services/followersServices.js";
 
+async function getFollowers(req, res) {
+    const { id: userId } = req.params;
+
+    const followers = await followServices.getFollowers(userId);
+
+    res.json({
+        followers: followers || [],
+    });
+}
+
+async function getOneFollower(req, res) {
+    const { id: userId } = req.params;
+    const { followerId } = req.params;
+
+    const follower = await followServices.getOneFollower(userId, followerId);
+
+    res.json({
+        follower,
+    });
+}
+
 async function addNewFollower(req, res) {
     const { id: followerId } = req.params;
     const { id: userId } = req.user;
@@ -30,6 +51,8 @@ async function deleteFollower(req, res) {
 }
 
 const followersContr = {
+    getFollowers: ctrlWrapper(getFollowers),
+    getOneFollower: ctrlWrapper(getOneFollower),
     addNewFollower: ctrlWrapper(addNewFollower),
     deleteFollower: ctrlWrapper(deleteFollower),
 };
