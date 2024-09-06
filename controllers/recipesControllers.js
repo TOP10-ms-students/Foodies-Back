@@ -47,9 +47,18 @@ const getUserRecipes = async (req, res) => {
     return res.json(recipes);
 };
 
+const getFavoriteRecipes = async (req, res) => {
+    const { id: userId } = req.user;
+    const favoriteList = await recipesServices.getFavorites(userId);
+    res.json({
+        favoriteRecipes: favoriteList,
+    });
+};
+
 export default {
     getAllRecipes: ctrlWrapper(getAllRecipes),
     getOneRecipe: ctrlWrapper(getOneRecipe),
     deleteRecipe: ctrlWrapper(deleteRecipe),
     getUserRecipes: ctrlWrapper(getUserRecipes),
+    getFavoriteRecipes: ctrlWrapper(getFavoriteRecipes),
 };

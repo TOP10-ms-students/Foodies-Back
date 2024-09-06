@@ -53,6 +53,11 @@ export class UsersService {
         }
         return user;
     }
+
+    async updateUser(query, data) {
+        const user = await this.getCurrentUser(query);
+        return user.update(data);
+    }
 }
 
 export const getUser = async (query) => {

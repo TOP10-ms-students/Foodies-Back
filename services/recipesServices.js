@@ -49,7 +49,13 @@ const getOneRecipe = async query => {
     }
 };
 
+const getFavorites = userId => {
+    const favoriteList = db.FavoriteRecipes.findAll({
+        where: { userId },
+    });
 
+    return favoriteList;
+};
 
 const findAllUserRecipes = query => db.Recipes.findAll({ where: query });
 
@@ -69,4 +75,5 @@ export default {
     getOneRecipe,
     deleteUserRecipe,
     findAllUserRecipes,
+    getFavorites,
 };
