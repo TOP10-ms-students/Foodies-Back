@@ -6,8 +6,6 @@ const getAllTestimonials = async (req, res) => {
     res.json(allTestimonials);
 };
 
-const testimonialsContr = {
+export default {
     getAllTestimonials: ctrlWrapper(getAllTestimonials),
 };
-
-export default testimonialsContr;
