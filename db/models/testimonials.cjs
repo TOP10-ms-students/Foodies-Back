@@ -8,11 +8,18 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-            // define association here
             models.Users.hasMany(models.Testimonials, {
                 foreignKey: {
                     name: "owner",
+                    allowNull: false,
                 },
+            });
+            models.Testimonials.belongsTo(models.Users, {
+                foreignKey: {
+                    name: "owner",
+                    allowNull: false,
+                },
+                onDelete: "CASCADE",
             });
         }
     }
@@ -24,8 +31,14 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 primaryKey: true,
             },
-            owner: DataTypes.STRING,
-            testimonial: DataTypes.TEXT,
+            owner: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            testimonial: {
+                type: DataTypes.TEXT,
+                allowNull: false,
+            },
         },
         {
             sequelize,

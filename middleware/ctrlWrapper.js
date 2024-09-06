@@ -1,7 +1,9 @@
 import { ApiError } from "../errors/apiError.js";
 import { AppError, errorTypes } from "../errors/appError.js";
 
-const ctrlWrapper = (ctrl) => {
+export const controllerKey = Symbol("controller");
+
+const ctrlWrapper = ctrl => {
     const func = async (req, res, next) => {
         try {
             await ctrl(req, res, next);
@@ -33,6 +35,8 @@ const ctrlWrapper = (ctrl) => {
             next(error);
         }
     };
+    Object.defineProperty(func, "name", { value: ctrl.name });
+    func[controllerKey] = true;
 
     return func;
 };
