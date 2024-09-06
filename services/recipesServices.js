@@ -49,7 +49,7 @@ const getOneRecipe = async query => {
     }
 };
 
-const postRecipe = async () => {};
+const postRecipe = data => db.Recipes.create(data);
 
 const getFavorites = userId => {
     const favoriteList = db.FavoriteRecipes.findAll({

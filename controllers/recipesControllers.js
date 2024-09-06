@@ -47,7 +47,7 @@ const getUserRecipes = async (req, res) => {
 };
 
 const getPopularRecipes = async (req, res) => {
-    const { limit = 4 } = req.query;
+    const { limit = appConfig.DEFAULT_LIMIT } = req.query;
 
     const result = await recipesServices.listPopularRecipes({ limit });
     res.json(result);
@@ -61,7 +61,12 @@ const getFavoriteRecipes = async (req, res) => {
     });
 };
 
-const createRecipe = async (req, res) => {};
+const createRecipe = async (req, res) => {
+    const { id: owner } = req.user;
+
+    const newRecipe = await recipesServices.postRecipe({ ...req.body, owner });
+    res.status(201).json(newRecipe);
+};
 
 export default {
     getAllRecipes: ctrlWrapper(getAllRecipes),

@@ -1,7 +1,10 @@
 import { Router } from "express";
+import validateBody from "../middleware/validateBody.js";
 import authenticate from "../middleware/authenticate.js";
 import recipesControllers from "../controllers/recipesControllers.js";
+import { createRecipeSchema } from "../schemas/recipesSchemas.js";
 
+const validateRequestBody = validateBody(createRecipeSchema);
 const recipesRouter = Router();
 
 recipesRouter.delete("/:id", authenticate, recipesControllers.deleteRecipe);
@@ -16,6 +19,6 @@ recipesRouter.get("/favorite", authenticate, recipesControllers.getFavoriteRecip
 
 recipesRouter.get("/:id", recipesControllers.getOneRecipe);
 
-recipesRouter.post("/", recipesControllers.createRecipe);
+recipesRouter.post("/", authenticate, validateRequestBody, recipesControllers.createRecipe);
 
 export default recipesRouter;
