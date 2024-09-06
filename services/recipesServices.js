@@ -101,20 +101,21 @@ const deleteUserRecipe = async (userId, recipeId) => {
 };
 
 const addFavoriteRecipe = async data => {
-    const { recipeId } = data;
+    const { userId, recipeId } = data;
 
     const existingFavorite = await db.FavoriteRecipes.findOne({
-        where: { recipeId },
+        where: { userId, recipeId },
     });
 
     if (existingFavorite) {
         await db.FavoriteRecipes.destroy({
-            where: { recipeId },
+            where: { userId, recipeId },
         });
         return { message: "Recipe removed from favorites" };
     }
 
     await db.FavoriteRecipes.create(data);
+    return { message: "Recipe added to favorites" };
 };
 
 export default {
