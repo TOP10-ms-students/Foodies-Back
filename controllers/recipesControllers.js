@@ -47,6 +47,13 @@ const getUserRecipes = async (req, res) => {
     return res.json(recipes);
 };
 
+const getPopularRecipes = async (req, res) => {
+    const { limit = 4 } = req.query;
+
+    const result = await recipesServices.listPopularRecipes({ limit });
+    res.json(result);
+}
+    
 const getFavoriteRecipes = async (req, res) => {
     const { id: userId } = req.user;
     const favoriteList = await recipesServices.getFavorites(userId);
@@ -58,6 +65,7 @@ const getFavoriteRecipes = async (req, res) => {
 export default {
     getAllRecipes: ctrlWrapper(getAllRecipes),
     getOneRecipe: ctrlWrapper(getOneRecipe),
+    getPopularRecipes: ctrlWrapper(getPopularRecipes),
     deleteRecipe: ctrlWrapper(deleteRecipe),
     getUserRecipes: ctrlWrapper(getUserRecipes),
     getFavoriteRecipes: ctrlWrapper(getFavoriteRecipes),
