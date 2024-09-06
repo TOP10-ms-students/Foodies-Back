@@ -17,9 +17,6 @@ async function getOneFollower(req, res) {
     const { followerId } = req.params;
 
     const follower = await followServices.getOneFollower(userId, followerId);
-    if (!follower) {
-        throw new ApiError(404, `Follower with id: ${followerId} not found`);
-    }
 
     res.json({
         follower,

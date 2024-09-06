@@ -1,4 +1,5 @@
 import db from "../db/models/index.cjs";
+import { ApiError } from "../errors/apiError.js";
 
 async function getFollowers(userId) {
     return db.Followers.findAll({
@@ -9,12 +10,18 @@ async function getFollowers(userId) {
 }
 
 async function getOneFollower(userId, followerId) {
-    return db.Followers.findOne({
+    const follower = await db.Followers.findOne({
         where: {
             userId,
             followerId,
         },
     });
+
+    if (!follower) {
+        throw new ApiError(404, `Follower with id: ${followerId} not found`);
+    }
+
+    return follower;
 }
 
 async function addFollower(followerId, userId) {
