@@ -1,10 +1,13 @@
 import { Router } from "express";
 import authenticate from "../middleware/authenticate.js";
-import upload from "../middleware/upload.js";
-import usersController from "../controllers/usersController.js";
+import followersContr from "../controllers/followersController.js";
 
-const usersRouter = Router();
+const router = Router();
 
-usersRouter.patch("/avatar", authenticate, upload.single("avatar"), usersController.addAvatar);
+router.use(authenticate);
 
-export default usersRouter;
+router.post("/:id/follower", followersContr.addNewFollower);
+
+router.delete("/:id/follower", followersContr.deleteFollower);
+
+export default router;
