@@ -25,6 +25,42 @@ const getOneRecipe = async (req, res) => {
     res.json(result);
 };
 
+const deleteRecipe = async (req, res) => {
+    const { id: userId } = req.user;
+
+    const { id: recipeId } = req.params;
+
+    const result = await recipesServices.deleteUserRecipe(userId, recipeId);
+
+    if (!result) {
+        return new ApiError(404, `Recipe with id=${recipeId} not found in your recipes`);
+    }
+
+    return res.json({ message: "Recipe deleted successfully." });
+};
+
+const getUserRecipes = async (req, res) => {
+    const { id: userId } = req.user;
+    const recipes = await recipesServices.findAllUserRecipes({ owner: userId });
+
+    return res.json(recipes);
+};
+
+const getPopularRecipes = async (req, res) => {
+    const { limit = appConfig.DEFAULT_LIMIT } = req.query;
+
+    const result = await recipesServices.listPopularRecipes({ limit });
+    res.json(result);
+};
+
+const getFavoriteRecipes = async (req, res) => {
+    const { id: userId } = req.user;
+    const favoriteList = await recipesServices.getFavorites(userId);
+    res.json({
+        favoriteRecipes: favoriteList,
+    });
+};
+
 const addFavoriteRecipe = async (req, res) => {
     const { id: userId } = req.user;
     const { id: recipeId } = req.params;
@@ -33,8 +69,20 @@ const addFavoriteRecipe = async (req, res) => {
     return res.json(favorite);
 };
 
+const createRecipe = async (req, res) => {
+    const { id: owner } = req.user;
+
+    const newRecipe = await recipesServices.postRecipe({ ...req.body, owner });
+    res.status(201).json(newRecipe);
+};
+
 export default {
     getAllRecipes: ctrlWrapper(getAllRecipes),
     getOneRecipe: ctrlWrapper(getOneRecipe),
+    createRecipe: ctrlWrapper(createRecipe),
+    getPopularRecipes: ctrlWrapper(getPopularRecipes),
+    deleteRecipe: ctrlWrapper(deleteRecipe),
+    getUserRecipes: ctrlWrapper(getUserRecipes),
+    getFavoriteRecipes: ctrlWrapper(getFavoriteRecipes),
     addFavoriteRecipe: ctrlWrapper(addFavoriteRecipe),
 };
