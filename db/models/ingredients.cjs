@@ -8,8 +8,10 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-            models.Recipes.belongsToMany(models.Ingredients, {
+            models.Ingredients.belongsToMany(models.Recipes, {
                 through: "RecipeIngredients",
+                foreignKey: "ingredientId",
+                otherKey: "recipeId",
             });
         }
     }
@@ -21,9 +23,18 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 primaryKey: true,
             },
-            name: DataTypes.STRING,
-            desc: DataTypes.TEXT,
-            img: DataTypes.STRING,
+            name: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            desc: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+            },
+            img: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
         },
         {
             sequelize,
