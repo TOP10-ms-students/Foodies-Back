@@ -4,6 +4,6 @@ import favoriteRecipesControllers from "../controllers/favoriteRecipesController
 
 const recipesRouter = Router();
 
-recipesRouter.delete(":id/favorite", authenticate, recipesControllers.deleteFavoriteRecipe);
+recipesRouter.delete(":id/favorite", authenticate, favoriteRecipesControllers.deleteFavoriteRecipe);
 
 export default recipesRouter;
