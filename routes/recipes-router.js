@@ -10,4 +10,6 @@ recipesRouter.get("/", recipesControllers.getAllRecipes);
 
 recipesRouter.get("/:id", recipesControllers.getOneRecipe);
 
+recipesRouter.post("/", recipesControllers.createRecipe);
+
 export default recipesRouter;

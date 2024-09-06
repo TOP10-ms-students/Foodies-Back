@@ -33,7 +33,6 @@ const listRecipes = (query = {}, { page: _page, limit: _limit }) => {
     });
 };
 
-
 const getOneRecipe = async query => {
     try {
         return await db.Recipes.findOne({
@@ -48,9 +47,10 @@ const getOneRecipe = async query => {
     }
 };
 
-
+const postRecipe = async () => {};
 
 export default {
     listRecipes,
     getOneRecipe,
+    postRecipe,
 };

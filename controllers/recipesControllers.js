@@ -25,7 +25,10 @@ const getOneRecipe = async (req, res) => {
     res.json(result);
 };
 
+const createRecipe = async (req, res) => {};
+
 export default {
     getAllRecipes: ctrlWrapper(getAllRecipes),
     getOneRecipe: ctrlWrapper(getOneRecipe),
+    createRecipe: ctrlWrapper(createRecipe),
 };
