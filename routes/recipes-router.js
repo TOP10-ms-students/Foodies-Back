@@ -8,7 +8,7 @@ recipesRouter.use(authenticate);
 
 recipesRouter.get("/", recipesControllers.getAllRecipes);
 
-recipesRouter.get("/favorite", recipesControllers.getFavoriteRecipes);
+recipesRouter.get("/favorite", authenticate, recipesControllers.getFavoriteRecipes);
 
 recipesRouter.get("/:id", recipesControllers.getOneRecipe);
 

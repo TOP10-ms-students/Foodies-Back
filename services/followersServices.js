@@ -2,7 +2,6 @@ import db from "../db/models/index.cjs";
 
 async function addFollower(followerId, userId) {
     const query = { followerId, userId };
-    console.log(query);
     const follow = await db.Followers.findOne({
         where: query,
     });
