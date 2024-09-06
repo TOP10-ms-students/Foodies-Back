@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize";
 import db from "../db/models/index.cjs";
+import { AppError, errorTypes } from "../errors/appError.js";
 import appConfig from "../config/appConfig.js";
 import { ApiError } from "../errors/apiError.js";
 
@@ -82,11 +83,25 @@ const listPopularRecipes = ({ limit }) => {
         order: [[Sequelize.literal("favorite_count"), "DESC"]],
         limit: Number(limit),
     });
+
+const findAllUserRecipes = query => db.Recipes.findAll({ where: query });
+
+const deleteUserRecipe = async (userId, recipeId) => {
+    const recipe = await getOneRecipe({ id: recipeId, owner: userId });
+
+    if (!recipe) {
+        return new AppError(errorTypes.NOT_FOUND);
+    }
+
+    await recipe.destroy();
+    return true;
 };
 
 export default {
     listRecipes,
     getOneRecipe,
     listPopularRecipes,
+    deleteUserRecipe,
+    findAllUserRecipes,
     getFavorites,
 };
