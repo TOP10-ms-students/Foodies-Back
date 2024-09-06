@@ -14,12 +14,10 @@ module.exports = (sequelize, DataTypes) => {
             recipeId: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                primaryKey: true,
             },
             userId: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                primaryKey: true,
             },
         },
         {
