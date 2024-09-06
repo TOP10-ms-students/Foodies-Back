@@ -48,9 +48,9 @@ const getOneRecipe = async query => {
     }
 };
 
-const getFavorites = query => {
+const getFavorites = userId => {
     const favoriteList = db.FavoriteRecipes.findAll({
-        where: query,
+        where: { userId },
     });
 
     return favoriteList;

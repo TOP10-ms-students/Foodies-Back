@@ -27,7 +27,7 @@ const getOneRecipe = async (req, res) => {
 
 const getFavoriteRecipes = async (req, res) => {
     const { id: userId } = req.user;
-    const favoriteList = await recipesServices.getFavorites({ userId });
+    const favoriteList = await recipesServices.getFavorites(userId);
     res.json({
         favoriteRecipes: favoriteList,
     });

@@ -1,18 +1,21 @@
 import db from "../db/models/index.cjs";
 
-async function addFollower(query) {
+async function addFollower(followerId, userId) {
+    const query = { followerId, userId };
+    console.log(query);
     const follow = await db.Followers.findOne({
         where: query,
     });
-    
+
     if (follow) {
-        return null
-    };
+        return null;
+    }
 
     return db.Followers.create(query);
-};
+}
 
-async function removeFollower(query) {
+async function removeFollower(followerId, userId) {
+    const query = {followerId, userId};
     const remFollower = await db.Users.findOne({
         where: {
             id: query.followerId,
@@ -23,7 +26,7 @@ async function removeFollower(query) {
         return null;
     }
 
-    db.Followers.destroy({
+    await db.Followers.destroy({
         where: query,
     });
 
