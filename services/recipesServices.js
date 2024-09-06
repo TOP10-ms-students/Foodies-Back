@@ -1,4 +1,6 @@
+import { Sequelize } from "sequelize";
 import db from "../db/models/index.cjs";
+import { AppError, errorTypes } from "../errors/appError.js";
 import appConfig from "../config/appConfig.js";
 import { ApiError } from "../errors/apiError.js";
 
@@ -49,8 +51,61 @@ const getOneRecipe = async query => {
 
 const postRecipe = async () => {};
 
+const getFavorites = userId => {
+    const favoriteList = db.FavoriteRecipes.findAll({
+        where: { userId },
+    });
+
+    return favoriteList;
+};
+
+const listPopularRecipes = ({ limit }) => {
+    return db.Recipes.findAll({
+        attributes: [
+            "id",
+            "title",
+            "category",
+            "owner",
+            "area",
+            "instructions",
+            "description",
+            "thumb",
+            "time",
+            [Sequelize.fn("COUNT", Sequelize.col("Users.id")), "favorite_count"],
+        ],
+        include: [
+            {
+                model: db.Users,
+                through: { attributes: [] },
+                require: false,
+            },
+        ],
+        subQuery: false,
+        group: ["Recipes.id", "Users.id"],
+        order: [[Sequelize.literal("favorite_count"), "DESC"]],
+        limit: Number(limit),
+    });
+};
+
+const findAllUserRecipes = query => db.Recipes.findAll({ where: query });
+
+const deleteUserRecipe = async (userId, recipeId) => {
+    const recipe = await getOneRecipe({ id: recipeId, owner: userId });
+
+    if (!recipe) {
+        return new AppError(errorTypes.NOT_FOUND);
+    }
+
+    await recipe.destroy();
+    return true;
+};
+
 export default {
     listRecipes,
     getOneRecipe,
     postRecipe,
+    listPopularRecipes,
+    deleteUserRecipe,
+    findAllUserRecipes,
+    getFavorites,
 };
