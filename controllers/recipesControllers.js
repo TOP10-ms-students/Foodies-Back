@@ -24,6 +24,28 @@ const getOneRecipe = async (req, res) => {
     }
     res.json(result);
 };
+    
+const deleteRecipe = async (req, res) => {
+    const { id: userId } = req.user;
+
+    const { id: recipeId } = req.params;
+    
+    const result = await recipesServices.deleteUserRecipe(userId, recipeId);
+    
+    if (!result) {
+        return new ApiError(404, `Recipe with id=${recipeId} not found in your recipes`);
+    }
+    
+    return res.json({ message: "Recipe deleted successfully." });
+    
+}
+
+const getUserRecipes = async (req, res) => {
+    const { id: userId } = req.user;
+    const recipes = await recipesServices.findAllUserRecipes({ owner: userId });
+
+    return res.json(recipes);
+};
 
 const getFavoriteRecipes = async (req, res) => {
     const { id: userId } = req.user;
@@ -36,5 +58,7 @@ const getFavoriteRecipes = async (req, res) => {
 export default {
     getAllRecipes: ctrlWrapper(getAllRecipes),
     getOneRecipe: ctrlWrapper(getOneRecipe),
+    deleteRecipe: ctrlWrapper(deleteRecipe),
+    getUserRecipes: ctrlWrapper(getUserRecipes),
     getFavoriteRecipes: ctrlWrapper(getFavoriteRecipes),
 };
