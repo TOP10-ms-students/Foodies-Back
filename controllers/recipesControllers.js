@@ -8,7 +8,7 @@ const deleteFavoriteRecipe = async (req, res) => {
 
     try {
         await recipesServices.removeFavoriteRecipe({ id: recipeId, owner });
-        res.json({ message: `Your favorite recipe with id ${recipeId} removed successfully` });
+        res.json({ message: `Recipe with id ${recipeId} removed from Favorites successfully` });
     } catch (error) {
         if (error instanceof ApiError) {
             res.status(error.status).json({ message: error.message });

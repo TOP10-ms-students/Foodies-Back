@@ -7,14 +7,14 @@ const removeFavoriteRecipe = async ({ id, owner }) => {
     });
 
     if (!existingFavorite) {
-        throw new AppError(errorTypes.NOT_FOUND, `Favorite recipe with id ${id} not found for user ${owner}`);
+        throw new AppError(errorTypes.NOT_FOUND, `Recipe with id ${id} not found in Favorites for user ${owner}`);
     }
 
     await db.FavoriteRecipes.destroy({
         where: { recipe_id: id, user_id: owner },
     });
 
-    return { message: `Favorite recipe with id ${id} removed successfully` };
+    return { message: `Recipe with id ${id} removed from Favorites successfully` };
 };
 
 export default {
