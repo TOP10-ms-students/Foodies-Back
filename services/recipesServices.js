@@ -111,11 +111,11 @@ const toggleFavoriteRecipe = async data => {
         await db.FavoriteRecipes.destroy({
             where: { userId, recipeId },
         });
-        return { message: "Recipe removed from favorites" };
+        return false;
     }
 
     await db.FavoriteRecipes.create(data);
-    return { message: "Recipe added to favorites" };
+    return true;
 };
 
 export default {
