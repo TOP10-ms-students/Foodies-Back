@@ -16,5 +16,10 @@ export const getAvatarPath = async data => {
 
 export const removeAvatarFile = async oldPath => {
     const avatarPath = path.join(oldAvatarsPathRoot, oldPath);
-    await fs.unlink(avatarPath);
+    
+    try {
+        await fs.unlink(avatarPath);
+    } catch (error) {
+        return console.log({ messsage: "There is no such file or directory to destroy the old avatar" });
+    }
 };
