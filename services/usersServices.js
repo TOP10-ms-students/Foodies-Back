@@ -65,7 +65,7 @@ export class UsersService {
     async updateUserAvatar(userId, oldPath, newFile) {
         const avatarExtension = oldPath.split(".").pop();
 
-        if (avatarExtension === "jpg") {
+        if (["jpg", "jpeg", "png", "gif"].includes(avatarExtension)) {
             await removeAvatarFile(oldPath);
         }
 
