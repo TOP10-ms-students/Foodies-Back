@@ -20,7 +20,7 @@ recipesRouter.get("/:id", recipesControllers.getOneRecipe);
 
 recipesRouter.delete(":id/favorite", authenticate, favoriteRecipesControllers.deleteFavoriteRecipe);
 
-recipesRouter.post("/:id/favorite", authenticate, recipesControllers.addFavoriteRecipe);
+recipesRouter.post("/:id/favorite", authenticate, recipesControllers.toggleFavoriteRecipe);
 
 recipesRouter.post("/", authenticate, validateRequestBody, recipesControllers.createRecipe);
 

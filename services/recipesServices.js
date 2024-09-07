@@ -100,7 +100,7 @@ const deleteUserRecipe = async (userId, recipeId) => {
     return true;
 };
 
-const addFavoriteRecipe = async data => {
+const toggleFavoriteRecipe = async data => {
     const { userId, recipeId } = data;
 
     const existingFavorite = await db.FavoriteRecipes.findOne({
@@ -126,5 +126,5 @@ export default {
     deleteUserRecipe,
     findAllUserRecipes,
     getFavorites,
-    addFavoriteRecipe,
+    toggleFavoriteRecipe,
 };
