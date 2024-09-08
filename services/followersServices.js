@@ -10,7 +10,7 @@ const getFollowers = (userId) => {
 
 const getFollowList = (userId) => {
     const follows = db.Followers.findAll({
-        where: { followerId: "64c8d958249fae54bae90bb9" },
+        where: { followerId: userId },
         attributes: ['userId'],
     });
     return follows;
