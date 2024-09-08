@@ -13,7 +13,7 @@ recipesRouter.get("/popular", recipesControllers.getPopularRecipes);
 
 recipesRouter.get("/favorite", authenticate, recipesControllers.getFavoriteRecipes);
 
-recipesRouter.delete(":id/favorite", authenticate, recipesControllers.deleteFavoriteRecipe);
+recipesRouter.delete("/:id/favorite", authenticate, recipesControllers.deleteFavoriteRecipe);
 
 recipesRouter.delete("/:id", authenticate, recipesControllers.deleteRecipe);
 
