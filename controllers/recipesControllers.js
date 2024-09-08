@@ -68,6 +68,14 @@ const createRecipe = async (req, res) => {
     res.status(201).json(newRecipe);
 };
 
+const deleteFavoriteRecipe = async (req, res) => {
+    const { id: recipeId } = req.params;
+    const { id: owner } = req.user;
+
+    await recipesServices.removeFavoriteRecipe({ id: recipeId, owner });
+    res.json({ message: `Recipe with id ${recipeId} removed from Favorites successfully` });
+};
+
 export default {
     getAllRecipes: ctrlWrapper(getAllRecipes),
     getOneRecipe: ctrlWrapper(getOneRecipe),
@@ -76,4 +84,5 @@ export default {
     deleteRecipe: ctrlWrapper(deleteRecipe),
     getUserRecipes: ctrlWrapper(getUserRecipes),
     getFavoriteRecipes: ctrlWrapper(getFavoriteRecipes),
+    deleteFavoriteRecipe: ctrlWrapper(deleteFavoriteRecipe),
 };

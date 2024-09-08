@@ -100,6 +100,13 @@ const deleteUserRecipe = async (userId, recipeId) => {
     return true;
 };
 
+const removeFavoriteRecipe = async ({ id, owner }) => {
+    await db.FavoriteRecipes.destroy({
+        where: { recipeId: id, userId: owner },
+    });
+};
+
+
 export default {
     listRecipes,
     getOneRecipe,
@@ -108,4 +115,5 @@ export default {
     deleteUserRecipe,
     findAllUserRecipes,
     getFavorites,
+    removeFavoriteRecipe,
 };
