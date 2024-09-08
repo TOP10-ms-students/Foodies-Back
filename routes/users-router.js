@@ -6,12 +6,12 @@ const router = Router();
 
 router.use(authenticate);
 
-router.get("/:id/followers", followersContr.getFollowers);
+router.get("/followers", followersContr.getFollowers);
 
-router.get("/:id/follower/:followerId", followersContr.getOneFollower);
+router.get("/follows", followersContr.getFollows);
 
-router.post("/:id/follower", followersContr.addNewFollower);
+router.post("/followers/:followerId", followersContr.addNewFollower);
 
-router.delete("/:id/follower", followersContr.deleteFollower);
+router.delete("/followers/:followerId", followersContr.deleteFollower);
 
 export default router;

@@ -2,8 +2,8 @@ import { ApiError } from "../errors/apiError.js";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
 import followServices from "../services/followersServices.js";
 
-async function getFollowers(req, res) {
-    const { id: userId } = req.params;
+const getFollowers = async (req, res) => {
+    const { id: userId } = req.user;
 
     const followers = await followServices.getFollowers(userId);
 
@@ -12,11 +12,10 @@ async function getFollowers(req, res) {
     });
 }
 
-async function getOneFollower(req, res) {
-    const { id: userId } = req.params;
-    const { followerId } = req.params;
+const getFollows = async (req, res) => {
+    const { id: userId } = req.user;
 
-    const follower = await followServices.getOneFollower(userId, followerId);
+    const follower = await followServices.getFollowList(userId);
 
     res.json({
         follower,
@@ -24,7 +23,7 @@ async function getOneFollower(req, res) {
 }
 
 async function addNewFollower(req, res) {
-    const { id: followerId } = req.params;
+    const { followerId } = req.params;
     const { id: userId } = req.user;
 
     if (followerId === userId) {
@@ -41,7 +40,7 @@ async function addNewFollower(req, res) {
 }
 
 async function deleteFollower(req, res) {
-    const { id: followerId } = req.params;
+    const { followerId } = req.params;
     const { id: userId } = req.user;
 
     const delFollowerId = await followServices.removeFollower(followerId, userId);
@@ -52,7 +51,7 @@ async function deleteFollower(req, res) {
 
 const followersContr = {
     getFollowers: ctrlWrapper(getFollowers),
-    getOneFollower: ctrlWrapper(getOneFollower),
+    getFollows: ctrlWrapper(getFollows),
     addNewFollower: ctrlWrapper(addNewFollower),
     deleteFollower: ctrlWrapper(deleteFollower),
 };

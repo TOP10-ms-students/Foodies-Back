@@ -1,30 +1,22 @@
 import db from "../db/models/index.cjs";
-import { ApiError } from "../errors/apiError.js";
 
-async function getFollowers(userId) {
+const getFollowers = (userId) => {
     return db.Followers.findAll({
         where: {
             userId,
         },
     });
-}
+};
 
-async function getOneFollower(userId, followerId) {
-    const follower = await db.Followers.findOne({
-        where: {
-            userId,
-            followerId,
-        },
+const getFollowList = (userId) => {
+    const follows = db.Followers.findAll({
+        where: { followerId: userId },
+        attributes: ['userId'],
     });
+    return follows;
+};
 
-    if (!follower) {
-        throw new ApiError(404, `Follower with id: ${followerId} not found`);
-    }
-
-    return follower;
-}
-
-async function addFollower(followerId, userId) {
+const addFollower = async (followerId, userId) => {
     const query = { followerId, userId };
     const follow = await db.Followers.findOne({
         where: query,
@@ -32,13 +24,13 @@ async function addFollower(followerId, userId) {
 
     if (follow) {
         return null;
-    }
+    };
 
     return db.Followers.create(query);
-}
+};
 
-async function removeFollower(followerId, userId) {
-    const query = {followerId, userId};
+const removeFollower = async (followerId, userId) => {
+    const query = { followerId, userId };
     const remFollower = await db.Users.findOne({
         where: {
             id: query.followerId,
@@ -54,13 +46,13 @@ async function removeFollower(followerId, userId) {
     });
 
     return remFollower.id;
-}
+};
 
 const followServices = {
     addFollower,
     removeFollower,
     getFollowers,
-    getOneFollower,
+    getFollowList,
 };
 
 export default followServices;

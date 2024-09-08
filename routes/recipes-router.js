@@ -14,11 +14,11 @@ recipesRouter.get("/popular", recipesControllers.getPopularRecipes);
 
 recipesRouter.get("/favorite", authenticate, recipesControllers.getFavoriteRecipes);
 
+recipesRouter.delete(":id/favorite", authenticate, favoriteRecipesControllers.deleteFavoriteRecipe);
+
 recipesRouter.delete("/:id", authenticate, recipesControllers.deleteRecipe);
 
 recipesRouter.get("/:id", recipesControllers.getOneRecipe);
-
-recipesRouter.delete(":id/favorite", authenticate, favoriteRecipesControllers.deleteFavoriteRecipe);
 
 recipesRouter.post("/", authenticate, validateRequestBody, recipesControllers.createRecipe);
 

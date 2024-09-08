@@ -1,13 +1,15 @@
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
 import getAreas from "../services/areasServices.js";
 
-async function getAllAreas(_, res) {
-    const allCategories = await getAreas();
-    res.json(allCategories);
+const getAllAreas = async (_, res) => {
+    const areas = await getAreas();
+    res.json({
+        areas,
+    });
 }
 
 const areasContr = {
-    getAllCategories: ctrlWrapper(getAllAreas),
+    getAllAreas: ctrlWrapper(getAllAreas),
 };
 
 export default areasContr;
