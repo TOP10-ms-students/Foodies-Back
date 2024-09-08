@@ -15,10 +15,10 @@ const getFollowers = async (req, res) => {
 const getFollows = async (req, res) => {
     const { id: userId } = req.user;
 
-    const follower = await followServices.getFollowList(userId);
+    const follows = await followServices.getFollowList(userId);
 
     res.json({
-        follower,
+        follows,
     });
 }
 
