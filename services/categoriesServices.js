@@ -1,7 +1,9 @@
 import db from "../db/models/index.cjs";
 
-function getCategories() {
+const getCategories = () => {
     return db.Categories.findAll();
 }
 
-export default getCategories;
+export default {
+    getCategories,
+};

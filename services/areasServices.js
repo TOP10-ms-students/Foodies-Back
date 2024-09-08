@@ -1,7 +1,9 @@
 import db from "../db/models/index.cjs";
 
-function getAreas() {
+const getAreas = () => {
     return db.Areas.findAll();
 }
 
-export default getAreas;
+export default {
+    getAreas,
+};

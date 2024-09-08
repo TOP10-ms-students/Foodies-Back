@@ -1,8 +1,8 @@
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
-import getCategories from "../services/categoriesServices.js";
+import categoriesServ from "../services/categoriesServices.js";
 
 const getAllCategories = async (_, res) => {
-    const categories = await getCategories();
+    const categories = await categoriesServ.getCategories();
     res.json({
         categories,
     });
