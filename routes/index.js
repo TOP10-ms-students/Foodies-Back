@@ -1,11 +1,11 @@
 import { Router } from "express";
 import authRouter from "./authRouter.js";
-import usersRouter from "./users-router.js";
-import categoriesRouter from "./categories-router.js";
-import areasRouter from "./areas-router.js";
-import ingredientsRouter from "./ingredients-router.js";
-import testimonialsRouter from "./testimonials-router.js";
-import recipesRouter from "./recipes-router.js";
+import usersRouter from "./usersRouter.js";
+import categoriesRouter from "./categoriesRouter.js";
+import areasRouter from "./areasRouter.js";
+import ingredientsRouter from "./ingredientsRouter.js";
+import testimonialsRouter from "./testimonialsRouter.js";
+import recipesRouter from "./recipesRouter.js";
 
 const router = Router();
 

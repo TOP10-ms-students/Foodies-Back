@@ -8,9 +8,9 @@ const router = Router();
 
 router.use(authenticate);
 
-router.get("/:id/followers", followersContr.getFollowers);
-
 router.get("/:id/follower/:followerId", followersContr.getOneFollower);
+
+router.get("/:id/followers", followersContr.getFollowers);
 
 router.post("/:id/follower", followersContr.addNewFollower);
 
