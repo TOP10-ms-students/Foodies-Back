@@ -76,6 +76,7 @@ const listPopularRecipes = ({ limit }) => {
         include: [
             {
                 model: db.Users,
+                attributes: ["id", "name", "avatar", "email"],
                 through: { attributes: [] },
                 require: false,
             },
@@ -115,6 +116,12 @@ const toggleFavoriteRecipe = async data => {
     }
 
     await db.FavoriteRecipes.create(data);
+};
+
+const removeFavoriteRecipe = async ({ id, owner }) => {
+    await db.FavoriteRecipes.destroy({
+        where: { recipeId: id, userId: owner },
+    });
     return true;
 };
 
@@ -124,6 +131,7 @@ export default {
     postRecipe,
     listPopularRecipes,
     deleteUserRecipe,
+    removeFavoriteRecipe,
     findAllUserRecipes,
     getFavorites,
     toggleFavoriteRecipe,

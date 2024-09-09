@@ -2,6 +2,7 @@ import { ApiError } from "../errors/apiError.js";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
 import recipesServices from "../services/recipesServices.js";
 import appConfig from "../config/appConfig.js";
+import db from "../db/models/index.cjs";
 
 const getAllRecipes = async (req, res) => {
     const { page = appConfig.DEFAULT_PAGE, limit = appConfig.DEFAULT_LIMIT, category, ingredient, area } = req.query;
@@ -69,11 +70,31 @@ const toggleFavoriteRecipe = async (req, res) => {
     return res.json(favorite);
 };
 
+const deleteFavoriteRecipe = async (req, res) => {
+    const { id: recipeId } = req.params;
+    const { id: owner } = req.user;
+
+    await recipesServices.removeFavoriteRecipe({ id: recipeId, owner });
+    res.json({ success: true });
+};
+
 const createRecipe = async (req, res) => {
     const { id: owner } = req.user;
 
     const newRecipe = await recipesServices.postRecipe({ ...req.body, owner });
-    res.status(201).json(newRecipe);
+    const [ownerData, categoryData, areaData] = await Promise.all([
+        db.Users.findByPk(newRecipe.owner, { attributes: ["id", "name", "email"] }),
+        db.Categories.findByPk(newRecipe.category, { attributes: ["id", "name"] }),
+        db.Areas.findByPk(newRecipe.area, { attributes: ["id", "name"] }),
+    ]);
+
+    const recipeWithAssociations = {
+        ...newRecipe.toJSON(),
+        owner: ownerData,
+        category: categoryData,
+        area: areaData,
+    };
+    res.status(201).json(recipeWithAssociations);
 };
 
 export default {
@@ -82,6 +103,7 @@ export default {
     createRecipe: ctrlWrapper(createRecipe),
     getPopularRecipes: ctrlWrapper(getPopularRecipes),
     deleteRecipe: ctrlWrapper(deleteRecipe),
+    deleteFavoriteRecipe: ctrlWrapper(deleteFavoriteRecipe),
     getUserRecipes: ctrlWrapper(getUserRecipes),
     getFavoriteRecipes: ctrlWrapper(getFavoriteRecipes),
     toggleFavoriteRecipe: ctrlWrapper(toggleFavoriteRecipe),
