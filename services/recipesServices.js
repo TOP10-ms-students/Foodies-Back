@@ -76,6 +76,7 @@ const listPopularRecipes = ({ limit }) => {
         include: [
             {
                 model: db.Users,
+                attributes: ["id", "name", "avatar", "email"],
                 through: { attributes: [] },
                 require: false,
             },
