@@ -1,12 +1,12 @@
 import { ApiError } from "../errors/apiError.js";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
-import followServices from "../services/usersServices.js";
+import userServices from "../services/usersServices.js";
 
 const getFollowers = async (req, res) => {
     const { id: userId } = req.params;
     const { page, limit } = req.query;
 
-    const followers = await followServices.getFollowers(userId, page, limit);
+    const followers = await userServices.getFollowers(userId, page, limit);
 
     res.json({
         followers,
@@ -15,7 +15,7 @@ const getFollowers = async (req, res) => {
 
 const getFollowing = async (req, res) => {
     const { id: userId } = req.user;
-    const following = await followServices.getFollowList(userId);
+    const following = await userServices.getFollowList(userId);
 
     res.json({
         following,
@@ -30,7 +30,7 @@ const addNewFollower = async (req, res) => {
         throw new ApiError(400);
     }
 
-    const followerAdd = await followServices.addFollower(followerId, userId);
+    const followerAdd = await userServices.addFollower(followerId, userId);
     if (!followerAdd) {
         throw new ApiError(409, "Ready in your list");
     }
@@ -43,17 +43,17 @@ const deleteFollower = async (req, res) => {
     const { followerId } = req.params;
     const { id: userId } = req.user;
 
-    const delFollowerId = await followServices.removeFollower(followerId, userId);
+    const delFollowerId = await userServices.removeFollower(followerId, userId);
     res.json({
         message: `Folower with id:${delFollowerId} removed successful`,
     });
 }
 
-const followersContr = {
+const userContr = {
     getFollowers: ctrlWrapper(getFollowers),
     getFollowing: ctrlWrapper(getFollowing),
     addNewFollower: ctrlWrapper(addNewFollower),
     deleteFollower: ctrlWrapper(deleteFollower),
 };
 
-export default followersContr;
+export default userContr;
