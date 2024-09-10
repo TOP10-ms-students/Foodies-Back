@@ -49,11 +49,29 @@ const deleteFollower = async (req, res) => {
     });
 }
 
+const addAvatar = async (req, res) => {
+    const { id, avatar: oldPath } = req.user;
+
+    try {
+        const avatar = await userServices.updateUserAvatar(id, oldPath, req.file);
+
+        res.json({
+            user: {
+                avatar,
+            },
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+
 const userContr = {
     getFollowers: ctrlWrapper(getFollowers),
     getFollowing: ctrlWrapper(getFollowing),
     addNewFollower: ctrlWrapper(addNewFollower),
     deleteFollower: ctrlWrapper(deleteFollower),
+    addAvatar: ctrlWrapper(addAvatar),
 };
 
 export default userContr;

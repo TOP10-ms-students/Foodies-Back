@@ -2,7 +2,8 @@ import {AppError, errorTypes} from "../errors/appError.js";
 import bcrypt from "bcrypt";
 import db from "../db/models/index.cjs";
 import jwt from "jsonwebtoken";
-import { ApiError } from "../errors/apiError.js";
+import { getAvatarPath, removeAvatarFile } from "../helpers/getAvatarPath.js";
+
 
 const secret = process.env.JWT_SECRET;
 
@@ -63,7 +64,20 @@ const getUser = async (query) => {
     return db.Users.findOne({ where: query, rejectOnEmpty: true });
 };
 
-async function getFollowers(userId, page = 1, limit = 4) {
+const updateUserAvatar = async (userId, oldPath, newFile) => {
+    const avatarExtension = oldPath.split(".").pop();
+
+    if (["jpg", "jpeg", "png", "gif"].includes(avatarExtension)) {
+        await removeAvatarFile(oldPath);
+    }
+
+    const avatar = await getAvatarPath(newFile);
+    const { avatar: newAvatarURL } = await updateUser(userId, { avatar });
+
+    return newAvatarURL;
+}
+
+const getFollowers = async (userId, page = 1, limit = 4) => {
     const normLimit = Number(limit);
     const normOffset = (Number(page) - 1) * normLimit;
 
@@ -84,7 +98,7 @@ const getFollowList = (userId) => {
     return follows;
 };
 
-async function addFollower(followerId, userId) {
+const addFollower = async (followerId, userId) => {
     const query = { followerId, userId };
     const follow = await db.Followers.findOne({
         where: query,
@@ -97,7 +111,7 @@ async function addFollower(followerId, userId) {
     return db.Followers.create(query);
 }
 
-async function removeFollower(followerId, userId) {
+const removeFollower = async (followerId, userId) => {
     const query = { followerId, userId };
     const remFollower = await db.Users.findOne({
         where: {
@@ -126,6 +140,7 @@ const userServices = {
     getFollowers,
     getFollowList,
     getUser,
+    updateUserAvatar,
 };
 
 export default userServices;

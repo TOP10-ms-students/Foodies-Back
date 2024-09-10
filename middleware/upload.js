@@ -1,6 +1,6 @@
 import multer from "multer";
 import path from "node:path";
-import {ApiError} from "../errors/apiError.js";
+import { ApiError } from "../errors/apiError.js";
 
 const destination = path.resolve("temp");
 
@@ -20,11 +20,11 @@ const limits = {
 const fileFilter = (req, file, callback) => {
     const extension = file.originalname.split(".").pop();
     if (extension === "exe") {
-        return callback(ApiError(400, ".exe extension not allowed"));
+        return callback(new ApiError(400, ".exe extension not allowed"));
     }
     callback(null, true);
 };
 
-const upload = multer({storage, limits, fileFilter});
+const upload = multer({ storage, limits, fileFilter });
 
 export default upload;
