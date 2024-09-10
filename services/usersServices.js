@@ -2,6 +2,7 @@ import {AppError, errorTypes} from "../errors/appError.js";
 import bcrypt from "bcrypt";
 import db from "../db/models/index.cjs";
 import jwt from "jsonwebtoken";
+import { getAvatarPath, removeAvatarFile } from "../helpers/getAvatarPath.js";
 
 export class UsersService {
     secret = process.env.JWT_SECRET;
@@ -56,7 +57,22 @@ export class UsersService {
 
     async updateUser(query, data) {
         const user = await this.getCurrentUser(query);
-        return user.update(data);
+        return user.update(data,{
+            returning: true,
+        });
+    }
+
+    async updateUserAvatar(userId, oldPath, newFile) {
+        const avatarExtension = oldPath.split(".").pop();
+
+        if (["jpg", "jpeg", "png", "gif"].includes(avatarExtension)) {
+            await removeAvatarFile(oldPath);
+        }
+
+        const avatar = await getAvatarPath(newFile);
+        const { avatar: newAvatarURL } = await this.updateUser(userId, { avatar });
+
+        return newAvatarURL;
     }
 }
 
