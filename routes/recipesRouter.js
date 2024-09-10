@@ -19,6 +19,10 @@ recipesRouter.delete("/:id", authenticate, recipesControllers.deleteRecipe);
 
 recipesRouter.get("/:id", recipesControllers.getOneRecipe);
 
+recipesRouter.delete(":id/favorite", authenticate, recipesControllers.deleteFavoriteRecipe);
+
+recipesRouter.post("/:id/favorite", authenticate, recipesControllers.toggleFavoriteRecipe);
+
 recipesRouter.post("/", authenticate, validateRequestBody, recipesControllers.createRecipe);
 
 recipesRouter.get("/", recipesControllers.getAllRecipes);
