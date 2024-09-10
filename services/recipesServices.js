@@ -22,9 +22,10 @@ const listRecipes = (query = {}, { page: _page, limit: _limit }) => {
         ? {
               model: db.Ingredients,
               where: { id: ingredient },
-              through: { attributes: [] },
           }
-        : null;
+        : {
+              model: db.Ingredients,
+          };
 
     return db.Recipes.findAll({
         where,
@@ -40,6 +41,7 @@ const getOneRecipe = async query => {
         return await db.Recipes.findOne({
             where: query,
             rejectOnEmpty: true,
+            include: [{ model: db.Ingredients }],
         });
     } catch (error) {
         if (error instanceof db.Sequelize.EmptyResultError) {
