@@ -3,6 +3,6 @@ import areasContr from "../controllers/areasController.js";
 
 const router = Router();
 
-router.get("/", areasContr.getAllCategories);
+router.get("/", areasContr.getAllAreas);
 
 export default router;

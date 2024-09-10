@@ -10,12 +10,12 @@ const validateLoginBody = validateBody(loginSchema);
 
 const authRouter = express.Router();
 
-authRouter.post("/signup", upload.single("avatar"), validateRequestBody, authControllers.signup);
+authRouter.post("/signup", upload.single("avatar"), validateRequestBody, authControllers.signUp);
 
 authRouter.post("/login", validateLoginBody, authControllers.logIn);
 
 authRouter.get("/current", authenticate, authControllers.getCurrentUser);
 
-authRouter.post("/logout", authenticate, authControllers.logout);
+authRouter.post("/logout", authenticate, authControllers.logOut);
 
 export default authRouter;

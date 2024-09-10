@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import {ApiError} from "../errors/apiError.js";
-import { getUser } from "../services/usersServices.js";
+import userServices from "../services/usersServices.js";
 
 const {JWT_SECRET} = process.env;
 
@@ -19,7 +19,7 @@ const authenticate = async (req, res, next) => {
 
     try {
         const { id } = jwt.verify(token, JWT_SECRET);
-        const user = await getUser({ id, token });
+        const user = await userServices.getUser({ id, token });
         req.user = user;
         next();
     } catch (e) {

@@ -1,13 +1,12 @@
 import gravatar from "gravatar";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
-import {UsersService} from "../services/usersServices.js";
+import userServices from "../services/usersServices.js";
 
-const service = new UsersService();
 
-async function signup(req, res) {
+const signUp = async (req, res) => {
     const {...userData} = req.body;
     const gravatarUrl = gravatar.url(userData.email, {s: "250"}, true);
-    const newUser = await service.signup({...userData, avatar: gravatarUrl,});
+    const newUser = await userServices.signUp({ ...userData, avatar: gravatarUrl, });
     res.status(201).json({
         user: {
             name: newUser.name,
@@ -16,8 +15,8 @@ async function signup(req, res) {
     });
 }
 
-async function logIn(req, res) {
-    const user = await service.logIn(req.body);
+const logIn = async (req, res) => {
+    const user = await userServices.logIn(req.body);
     res.json({
         user: {
             name: user.name,
@@ -28,14 +27,14 @@ async function logIn(req, res) {
     });
 }
 
-async function logout(req, res) {
+const logOut = async (req, res) => {
     const {id} = req.user;
-    await service.updateUser(id, {token: null});
+    await userServices.updateUser(id, { token: null });
     res.status(204).send();
 }
 
-async function getCurrentUser(req, res) {
-    const user = await service.getCurrentUser(req.user.id);
+const getCurrentUser = async(req, res) => {
+    const user = await userServices.getCurrentUser(req.user.id);
     res.json({
         name: user.name,
         email: user.email,
@@ -44,8 +43,8 @@ async function getCurrentUser(req, res) {
 }
 
 export default {
-    signup: ctrlWrapper(signup),
+    signUp: ctrlWrapper(signUp),
     logIn: ctrlWrapper(logIn),
-    logout: ctrlWrapper(logout),
+    logOut: ctrlWrapper(logOut),
     getCurrentUser: ctrlWrapper(getCurrentUser),
 };

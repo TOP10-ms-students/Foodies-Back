@@ -4,4 +4,6 @@ function getCategories() {
     return db.Categories.findAll();
 }
 
-export default getCategories;
+export default {
+    getCategories,
+};
