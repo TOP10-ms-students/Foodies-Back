@@ -16,7 +16,6 @@ export const getAvatarPath = async data => {
 
 export const removeAvatarFile = async oldPath => {
     const avatarPath = path.join(oldAvatarsPathRoot, oldPath);
-    
     try {
         await fs.unlink(avatarPath);
     } catch (error) {

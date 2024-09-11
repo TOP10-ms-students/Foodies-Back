@@ -1,20 +1,22 @@
 import { Router } from "express";
 import authenticate from "../middleware/authenticate.js";
-import followersContr from "../controllers/followersController.js";
+
+import userContr from "../controllers/userControllers.js";
 import upload from "../middleware/upload.js";
-import usersController from "../controllers/usersController.js";
 
 const router = Router();
 
 router.use(authenticate);
 
-router.get("/:id/follower/:followerId", followersContr.getOneFollower);
+router.get("/following", userContr.getFollowing);
 
-router.get("/:id/followers", followersContr.getFollowers);
+router.get("/:id/followers", userContr.getFollowers);
 
-router.post("/:id/follower", followersContr.addNewFollower);
+router.post("/:id/follow", userContr.addNewFollower);
 
-router.delete("/:id/follower", followersContr.deleteFollower);
+router.delete("/:id/follow", userContr.deleteFollower);
+
+router.patch("/avatar", upload.single("avatar"), userContr.addAvatar);
 
 router.patch("/avatar", upload.single("avatar"), usersController.addAvatar);
 

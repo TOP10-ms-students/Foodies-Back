@@ -4,4 +4,6 @@ function getAreas() {
     return db.Areas.findAll();
 }
 
-export default getAreas;
+export default {
+    getAreas,
+};

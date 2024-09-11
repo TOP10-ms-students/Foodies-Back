@@ -1,6 +1,6 @@
 import multer from "multer";
 import path from "node:path";
-import {ApiError} from "../errors/apiError.js";
+import { ApiError } from "../errors/apiError.js";
 
 const destination = path.resolve("temp");
 
@@ -25,6 +25,6 @@ const fileFilter = (req, file, callback) => {
     callback(null, true);
 };
 
-const upload = multer({storage, limits, fileFilter});
+const upload = multer({ storage, limits, fileFilter });
 
 export default upload;
