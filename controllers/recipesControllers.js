@@ -1,6 +1,7 @@
 import { ApiError } from "../errors/apiError.js";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
 import recipesServices from "../services/recipesServices.js";
+import recipeIngredientsServices from "../services/recipeIngredientsServices.js";
 import appConfig from "../config/appConfig.js";
 import db from "../db/models/index.cjs";
 
@@ -81,7 +82,12 @@ const deleteFavoriteRecipe = async (req, res) => {
 const createRecipe = async (req, res) => {
     const { id: owner } = req.user;
 
-    const newRecipe = await recipesServices.postRecipe({ ...req.body, owner });
+    const { ingredients, ...recipeData } = req.body;
+
+    const newRecipe = await recipesServices.postRecipe({ ...recipeData, owner });
+    const newIngredients = await recipeIngredientsServices.postRecipeIngredients(
+        ingredients.map(i => ({ ...i, recipeId: newRecipe.id }))
+    );
     const [ownerData, categoryData, areaData] = await Promise.all([
         db.Users.findByPk(newRecipe.owner, { attributes: ["id", "name", "email"] }),
         db.Categories.findByPk(newRecipe.category, { attributes: ["id", "name"] }),
@@ -90,6 +96,7 @@ const createRecipe = async (req, res) => {
 
     const recipeWithAssociations = {
         ...newRecipe.toJSON(),
+        ingredients: newIngredients,
         owner: ownerData,
         category: categoryData,
         area: areaData,
