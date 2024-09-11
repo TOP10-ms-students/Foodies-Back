@@ -1,6 +1,6 @@
 import {AppError, errorTypes} from "../errors/appError.js";
 import bcrypt from "bcrypt";
-import db from "../db/models/index.cjs";
+import db from "../db/index.js";
 import jwt from "jsonwebtoken";
 import { getAvatarPath, removeAvatarFile } from "../helpers/getAvatarPath.js";
 
@@ -41,17 +41,6 @@ const logIn = async (data) => {
 
     user.token = jwt.sign({ id: user.id }, secret, { expiresIn: "24h" });
         return await user.save();
-    }
-const getCurrentUser = async (userId) => {
-    const user = await db.Users.findOne({
-        where: {
-            id: userId,
-        },
-    });
-    if (!user) {
-        throw new AppError(errorTypes.NOT_FOUND, "User not found");
-    }
-        return user;
     }
 
 const updateUser = async (query, data) => {

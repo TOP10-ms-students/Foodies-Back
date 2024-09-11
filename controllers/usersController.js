@@ -2,6 +2,24 @@ import { ApiError } from "../errors/apiError.js";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
 import userServices from "../services/usersServices.js";
 
+const getCurrentUser = async(req, res) => {
+    const { name, email, avatar } = req.user;
+
+    res.json({
+        user: { name, email, avatar }
+    });
+}
+
+const getUser = async(req, res) => {
+    const { id } = req.params;
+
+    const { name, email, avatar } = userServices.getUser({ id });
+
+    res.json({
+        user: { name, email, avatar }
+    });
+}
+
 const getFollowers = async (req, res) => {
     const { id: userId } = req.params;
     const { page, limit } = req.query;
@@ -67,6 +85,8 @@ const addAvatar = async (req, res) => {
 
 
 const userContr = {
+    getCurrentUser: ctrlWrapper(getCurrentUser),
+    getUser: ctrlWrapper(getUser),
     getFollowers: ctrlWrapper(getFollowers),
     getFollowing: ctrlWrapper(getFollowing),
     addNewFollower: ctrlWrapper(addNewFollower),

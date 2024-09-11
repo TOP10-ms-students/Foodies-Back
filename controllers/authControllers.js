@@ -15,7 +15,7 @@ const signUp = async (req, res) => {
     });
 }
 
-const logIn = async (req, res) => {
+const signIn = async (req, res) => {
     const user = await userServices.logIn(req.body);
     res.json({
         user: {
@@ -33,18 +33,8 @@ const logOut = async (req, res) => {
     res.status(204).send();
 }
 
-const getCurrentUser = async(req, res) => {
-    const user = await userServices.getCurrentUser(req.user.id);
-    res.json({
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar,
-    });
-}
-
 export default {
     signUp: ctrlWrapper(signUp),
-    logIn: ctrlWrapper(logIn),
+    signIn: ctrlWrapper(signIn),
     logOut: ctrlWrapper(logOut),
-    getCurrentUser: ctrlWrapper(getCurrentUser),
 };

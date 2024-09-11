@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize";
-import db from "../db/models/index.cjs";
+import db from "../db/index.js";
 import { AppError, errorTypes } from "../errors/appError.js";
 import appConfig from "../config/appConfig.js";
 import { ApiError } from "../errors/apiError.js";

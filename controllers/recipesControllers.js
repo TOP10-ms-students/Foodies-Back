@@ -2,7 +2,7 @@ import { ApiError } from "../errors/apiError.js";
 import ctrlWrapper from "../middleware/ctrlWrapper.js";
 import recipesServices from "../services/recipesServices.js";
 import appConfig from "../config/appConfig.js";
-import db from "../db/models/index.cjs";
+import db from "../db/index.js";
 
 const getAllRecipes = async (req, res) => {
     const { page = appConfig.DEFAULT_PAGE, limit = appConfig.DEFAULT_LIMIT, category, ingredient, area } = req.query;
@@ -83,9 +83,9 @@ const createRecipe = async (req, res) => {
 
     const newRecipe = await recipesServices.postRecipe({ ...req.body, owner });
     const [ownerData, categoryData, areaData] = await Promise.all([
-        db.Users.findByPk(newRecipe.owner, { attributes: ["id", "name", "email"] }),
-        db.Categories.findByPk(newRecipe.category, { attributes: ["id", "name"] }),
-        db.Areas.findByPk(newRecipe.area, { attributes: ["id", "name"] }),
+        db.User.findByPk(newRecipe.owner, { attributes: ["id", "name", "email"] }),
+        db.Category.findByPk(newRecipe.category, { attributes: ["id", "name"] }),
+        db.Area.findByPk(newRecipe.area, { attributes: ["id", "name"] }),
     ]);
 
     const recipeWithAssociations = {

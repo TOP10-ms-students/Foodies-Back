@@ -3,90 +3,105 @@
         "_id": {
             "$oid": "6462a6cd4c3d0ddd28897f8a"
         },
-        "name": "Seafood"
+        "name": "Seafood",
+        "img": "https://res.cloudinary.com/dnldecc0p/image/upload/f_auto,q_auto/v1/category/m8kesrqbobba1eqlioff"
     },
     {
         "_id": {
             "$oid": "6462a6cd4c3d0ddd28897f8b"
         },
-        "name": "Lamb"
+        "name": "Lamb",
+        "img": "https://res.cloudinary.com/dnldecc0p/image/upload/f_auto,q_auto/v1/category/plxvm601pie5qumlrmmv"
     },
     {
         "_id": {
             "$oid": "6462a6cd4c3d0ddd28897f8c"
         },
-        "name": "Starter"
+        "name": "Starter",
+        "img": "https://res.cloudinary.com/dnldecc0p/image/upload/f_auto,q_auto/v1/category/buapy75j60ef7mbncj2v"
     },
     {
         "_id": {
             "$oid": "6462a6cd4c3d0ddd28897f8d"
         },
-        "name": "Chicken"
+        "name": "Chicken",
+        "img": "https://res.cloudinary.com/dnldecc0p/image/upload/f_auto,q_auto/v1/category/dga10zvsq4knloqhw5wf"
     },
     {
         "_id": {
             "$oid": "6462a6cd4c3d0ddd28897f8e"
         },
-        "name": "Beef"
+        "name": "Beef",
+        "img": "https://res.cloudinary.com/dnldecc0p/image/upload/f_auto,q_auto/v1/category/ee2qrzbjgtpvbexiyr82"
     },
     {
         "_id": {
             "$oid": "6462a6cd4c3d0ddd28897f8f"
         },
-        "name": "Dessert"
+        "name": "Dessert",
+        "img": "https://res.cloudinary.com/dnldecc0p/image/upload/f_auto,q_auto/v1/category/ttmxihvwkdivkkvh4x7s"
     },
     {
         "_id": {
             "$oid": "6462a6cd4c3d0ddd28897f90"
         },
-        "name": "Vegan"
+        "name": "Vegan",
+        "img": "https://res.cloudinary.com/dnldecc0p/image/upload/f_auto,q_auto/v1/category/tehywpaayzlfp7hg0orq"
     },
     {
         "_id": {
             "$oid": "6462a6cd4c3d0ddd28897f91"
         },
-        "name": "Pork"
+        "name": "Pork",
+        "img": "https://res.cloudinary.com/dnldecc0p/image/upload/f_auto,q_auto/v1/category/haduhgccda4xpx92yan2"
     },
     {
         "_id": {
             "$oid": "6462a6cd4c3d0ddd28897f92"
         },
-        "name": "Vegetarian"
+        "name": "Vegetarian",
+        "img": "https://res.cloudinary.com/dnldecc0p/image/upload/f_auto,q_auto/v1/category/svjjqpkebyqpada40ssz"
     },
     {
         "_id": {
             "$oid": "6462a6cd4c3d0ddd28897f93"
         },
-        "name": "Miscellaneous"
+        "name": "Miscellaneous",
+        "img": "https://res.cloudinary.com/dnldecc0p/image/upload/f_auto,q_auto/v1/category/dzkthwqwiv8m6fmliqg0"
     },
     {
         "_id": {
             "$oid": "6462a6cd4c3d0ddd28897f94"
         },
-        "name": "Pasta"
+        "name": "Pasta",
+        "img": "https://res.cloudinary.com/dnldecc0p/image/upload/f_auto,q_auto/v1/category/ngxcw7y1jymtfqy6vvgf"
     },
     {
         "_id": {
             "$oid": "6462a6cd4c3d0ddd28897f95"
         },
-        "name": "Breakfast"
+        "name": "Breakfast",
+        "img": "https://res.cloudinary.com/dnldecc0p/image/upload/f_auto,q_auto/v1/category/mv72h2wmgu5kumjvu8qy"
     },
     {
         "_id": {
             "$oid": "6462a6cd4c3d0ddd28897f96"
         },
-        "name": "Side"
+        "name": "Side",
+        "img": "https://res.cloudinary.com/dnldecc0p/image/upload/f_auto,q_auto/v1/category/knz761vwhguzxmmp1lki"
     },
     {
         "_id": {
             "$oid": "6462a6cd4c3d0ddd28897f97"
         },
-        "name": "Goat"
+        "name": "Goat",
+        "img": "https://res.cloudinary.com/dnldecc0p/image/upload/f_auto,q_auto/v1/category/h7ddvh0suopd8oxequk5"
     },
     {
         "_id": {
             "$oid": "6462a6cd4c3d0ddd28897f98"
         },
-        "name": "Soup"
+        "name": "Soup",
+        "img": "https://res.cloudinary.com/dnldecc0p/image/upload/f_auto,q_auto/v1/category/pr942ra4xn4i6v3g67bu"
     }
 ]

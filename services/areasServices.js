@@ -1,4 +1,4 @@
-import db from "../db/models/index.cjs";
+import db from "../db/index.js";
 
 function getAreas() {
     return db.Areas.findAll();

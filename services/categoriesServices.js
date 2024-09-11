@@ -1,4 +1,4 @@
-import db from "../db/models/index.cjs";
+import db from "../db/index.js";
 
 function getCategories() {
     return db.Categories.findAll();
