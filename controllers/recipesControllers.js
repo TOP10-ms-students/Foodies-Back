@@ -62,6 +62,14 @@ const getFavoriteRecipes = async (req, res) => {
     });
 };
 
+const toggleFavoriteRecipe = async (req, res) => {
+    const { id: userId } = req.user;
+    const { id: recipeId } = req.params;
+
+    const favorite = await recipesServices.toggleFavoriteRecipe({ userId, recipeId });
+    return res.json(favorite);
+};
+
 const deleteFavoriteRecipe = async (req, res) => {
     const { id: recipeId } = req.params;
     const { id: owner } = req.user;
@@ -98,4 +106,5 @@ export default {
     deleteFavoriteRecipe: ctrlWrapper(deleteFavoriteRecipe),
     getUserRecipes: ctrlWrapper(getUserRecipes),
     getFavoriteRecipes: ctrlWrapper(getFavoriteRecipes),
+    toggleFavoriteRecipe: ctrlWrapper(toggleFavoriteRecipe),
 };
