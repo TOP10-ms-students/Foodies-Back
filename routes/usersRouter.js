@@ -1,7 +1,6 @@
 import { Router } from "express";
 import authenticate from "../middleware/authenticate.js";
-
-import userContr from "../controllers/userControllers.js";
+import userContr from "../controllers/usersController.js";
 import upload from "../middleware/upload.js";
 
 const router = Router();
