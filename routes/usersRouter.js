@@ -18,6 +18,6 @@ router.delete("/:id/follow", userContr.deleteFollower);
 
 router.patch("/avatar", upload.single("avatar"), userContr.addAvatar);
 
-router.patch("/avatar", upload.single("avatar"), usersController.addAvatar);
+router.patch("/avatar", upload.single("avatar"), userContr.addAvatar);
 
 export default router;

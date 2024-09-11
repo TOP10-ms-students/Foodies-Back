@@ -55,11 +55,11 @@ const getCurrentUser = async (userId) => {
     }
 
 const updateUser = async (query, data) => {
-        const user = await getCurrentUser(query);
-        return user.update(data,{
-            returning: true,
-        });
-
+    const user = await getCurrentUser(query);
+    return user.update(data, {
+        returning: true,
+    });
+}
 
 const getUser = async (query) => {
     return db.Users.findOne({ where: query, rejectOnEmpty: true });
