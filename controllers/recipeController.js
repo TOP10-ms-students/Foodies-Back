@@ -27,31 +27,19 @@ const getOneRecipe = async (req, res) => {
     res.json({ recipe });
 };
 
-const deleteRecipe = async (req, res) => {
-    const { id: userId } = req.user;
+const getMyRecipes = async (req, res) => {
+    const { id: ownerId, page, limit } = req.user;
 
-    const { id: recipeId } = req.params;
+    const { count, rows: recipes } = await recipeRepository.findRecipes({ ownerId }, normalizePaginationParams(page, limit));
 
-    const result = await recipesServices.deleteUserRecipe(userId, recipeId);
-
-    if (!result) {
-        return new ApiError(404, `Recipe with id=${recipeId} not found in your recipes`);
-    }
-
-    return res.json({ message: "Recipe deleted successfully." });
-};
-
-const getUserRecipes = async (req, res) => {
-    const { id: userId } = req.user;
-    const recipes = await recipesServices.findAllUserRecipes({ owner: userId });
-
-    return res.json(recipes);
+    res.json({ count, recipes });
 };
 
 const getPopularRecipes = async (req, res) => {
-    const { limit = appConfig.DEFAULT_LIMIT } = req.query;
+    const { limit = 4 } = req.query;
 
     const result = await recipesServices.listPopularRecipes({ limit });
+
     res.json(result);
 };
 
@@ -68,7 +56,8 @@ const toggleFavoriteRecipe = async (req, res) => {
     const { id: recipeId } = req.params;
 
     const favorite = await recipesServices.toggleFavoriteRecipe({ userId, recipeId });
-    return res.json(favorite);
+
+    res.json(favorite);
 };
 
 const deleteFavoriteRecipe = async (req, res) => {
@@ -104,6 +93,20 @@ const createRecipe = async (req, res) => {
     res.status(201).json(recipeWithAssociations);
 };
 
+const deleteRecipe = async (req, res) => {
+    const { id: userId } = req.user;
+
+    const { id: recipeId } = req.params;
+
+    const result = await recipesServices.deleteUserRecipe(userId, recipeId);
+
+    if (!result) {
+        return new ApiError(404, `Recipe with id=${recipeId} not found in your recipes`);
+    }
+
+    res.json({ message: "Recipe deleted successfully." });
+};
+
 export default {
     getRecipeList: ctrlWrapper(getRecipeList),
     getOneRecipe: ctrlWrapper(getOneRecipe),
@@ -111,7 +114,7 @@ export default {
     getPopularRecipes: ctrlWrapper(getPopularRecipes),
     deleteRecipe: ctrlWrapper(deleteRecipe),
     deleteFavoriteRecipe: ctrlWrapper(deleteFavoriteRecipe),
-    getUserRecipes: ctrlWrapper(getUserRecipes),
+    getMyRecipes: ctrlWrapper(getMyRecipes),
     getFavoriteRecipes: ctrlWrapper(getFavoriteRecipes),
     toggleFavoriteRecipe: ctrlWrapper(toggleFavoriteRecipe),
 };

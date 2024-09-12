@@ -7,7 +7,7 @@ import { createRecipeSchema } from "../schemas/recipesSchemas.js";
 const validateRequestBody = validateBody(createRecipeSchema);
 const recipeRouter = Router();
 
-recipeRouter.get("/my-recipes", authenticate, recipeController.getUserRecipes);
+recipeRouter.get("/my", authenticate, recipeController.getMyRecipes);
 
 recipeRouter.get("/popular", recipeController.getPopularRecipes);
 
