@@ -25,6 +25,6 @@ recipeRouter.post("/:id/favorite", authenticate, recipeController.toggleFavorite
 
 recipeRouter.post("/", authenticate, validateRequestBody, recipeController.createRecipe);
 
-recipeRouter.get("/", recipeController.getAllRecipes);
+recipeRouter.get("/", recipeController.getRecipeList);
 
 export default recipeRouter;

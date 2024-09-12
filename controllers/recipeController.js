@@ -2,18 +2,21 @@ import { ApiError } from "../errors/apiError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import recipesServices from "../services/recipesServices.js";
 import db from "../db/index.js";
+import { normalizePaginationParams } from "../helpers/normalizePaginationParams.js";
+import recipeRepository from "../repository/recipeRepository.js";
 
-const getAllRecipes = async (req, res) => {
-    const { page = 1, limit = 10, category, ingredient, area } = req.query;
+const getRecipeList = async (req, res) => {
+    const { page, limit, category, ingredient, area } = req.query;
 
     const query = {
-        category,
-        ingredient,
-        area,
+        categoryId: category,
+        areaId: area,
+        ingredientId: ingredient,
     };
 
-    const result = await recipesServices.listRecipes(query, { page, limit });
-    res.json(result);
+    const { count, rows: recipes } = await recipeRepository.findRecipes(query, normalizePaginationParams(page, limit));
+
+    res.json({ count, recipes });
 };
 
 const getOneRecipe = async (req, res) => {
@@ -103,7 +106,7 @@ const createRecipe = async (req, res) => {
 };
 
 export default {
-    getAllRecipes: ctrlWrapper(getAllRecipes),
+    getRecipeList: ctrlWrapper(getRecipeList),
     getOneRecipe: ctrlWrapper(getOneRecipe),
     createRecipe: ctrlWrapper(createRecipe),
     getPopularRecipes: ctrlWrapper(getPopularRecipes),
