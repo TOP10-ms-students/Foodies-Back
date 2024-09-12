@@ -32,6 +32,7 @@ const Recipe = (sequelize) => {
 
     RecipeModel.associate = (models) => {
         RecipeModel.belongsTo(models.User, {
+            as: 'owner',
             foreignKey: {
                 name: 'ownerId',
                 allowNull: false,
@@ -49,7 +50,7 @@ const Recipe = (sequelize) => {
 
         RecipeModel.belongsToMany(models.Ingredient, {
             through: 'RecipeIngredient',
-            as: 'recipes',
+            as: 'ingredients',
             foreignKey: {
                 name: 'recipeId',
                 allowNull: false,
