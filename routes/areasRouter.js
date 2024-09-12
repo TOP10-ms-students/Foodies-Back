@@ -1,8 +1,8 @@
 import { Router } from "express";
-import areasContr from "../controllers/areasController.js";
+import areasController from "../controllers/areasController.js";
 
 const router = Router();
 
-router.get("/", areasContr.getAllAreas);
+router.get("/", areasController.areaList);
 
 export default router;

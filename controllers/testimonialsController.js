@@ -1,11 +1,12 @@
-import ctrlWrapper from "../middleware/ctrlWrapper.js";
-import * as testimonialsService from "../services/testimonialsServices.js";
+import ctrlWrapper from "../helpers/ctrlWrapper.js";
+import testimonialRepository from "../repository/testimonialRepository.js";
 
-const getAllTestimonials = async (req, res) => {
-    const allTestimonials = await testimonialsService.getAllTestimonials();
-    res.json(allTestimonials);
+const testimonialList = async (req, res) => {
+    const testimonials = await testimonialRepository.findActualTestimonials();
+
+    res.json({ testimonials });
 };
 
 export default {
-    getAllTestimonials: ctrlWrapper(getAllTestimonials),
+    testimonialList: ctrlWrapper(testimonialList),
 };

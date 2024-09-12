@@ -1,69 +1,39 @@
 import {AppError, errorTypes} from "../errors/appError.js";
-import bcrypt from "bcrypt";
-import db from "../db/models/index.cjs";
-import jwt from "jsonwebtoken";
+import db from "../db/index.js";
 import { getAvatarPath, removeAvatarFile } from "../helpers/getAvatarPath.js";
+import passwordManager from "../helpers/passwordManager.js";
+import tokenManager from "../helpers/tokenManager.js";
+import userRepository from "../repository/userRepository.js";
 
+const createUser = async (data) => {
+    const {name, email, password: plainPassword} = data;
 
-const secret = process.env.JWT_SECRET;
+    const password = passwordManager.hashPassword(plainPassword);
 
-const signUp = async (data) => {
-    const user = await db.Users.findOne({
-        where: {
-            email: data.email,
-        },
+    return await db.User.create({
+        name,
+        email,
+        emailCanonical: email.toLowerCase(),
+        password,
     });
-    if (user) {
-        throw new AppError(errorTypes.ALREADY_EXIST, "Email in use");
-    }
-
-    const hashPassword = await bcrypt.hash(data.password, 10);
-    const newUser = await db.Users.create({
-        ...data,
-        password: hashPassword,
-    });
-    return newUser;
 };
 
 const logIn = async (data) => {
-    const user = await db.Users.findOne({
-        where: {
-            email: data.email,
-        },
-    });
-    if (!user) {
-        throw new AppError(errorTypes.NOT_FOUND, "User not found");
-    }
-    const isValidPassword = await bcrypt.compare(data.password, user.password);
-    if (!isValidPassword) {
+    const { email, password } = data;
+
+    const user = await userRepository.findUser({ email });
+
+    if (!user || !passwordManager.isPasswordValid(password, user?.password))
         throw new AppError(errorTypes.INVALID_CRED, "Email or password is wrong");
-    }
 
-    user.token = jwt.sign({ id: user.id }, secret, { expiresIn: "24h" });
-        return await user.save();
-    }
-const getCurrentUser = async (userId) => {
-    const user = await db.Users.findOne({
-        where: {
-            id: userId,
-        },
-    });
-    if (!user) {
-        throw new AppError(errorTypes.NOT_FOUND, "User not found");
-    }
-        return user;
-    }
+    const token = tokenManager.generate({ id: user.id });
 
-const updateUser = async (query, data) => {
-    const user = await getCurrentUser(query);
-    return user.update(data, {
-        returning: true,
-    });
+    await user.update({ token });
+
+    return user;
 }
 
-const getUser = async (query) => {
-    return db.Users.findOne({ where: query, rejectOnEmpty: true });
-};
+export const updateUser = async (user, data) => user.update(data);
 
 const updateUserAvatar = async (userId, oldPath, newFile) => {
     const avatarExtension = oldPath.split(".").pop();
@@ -78,71 +48,36 @@ const updateUserAvatar = async (userId, oldPath, newFile) => {
     return newAvatarURL;
 }
 
-const getFollowers = async (userId, page = 1, limit = 4) => {
-    const normLimit = Number(limit);
-    const normOffset = (Number(page) - 1) * normLimit;
+const startFollow = async (follower, id) => {
+    const user = await userRepository.findUser({ id });
 
-    return db.Followers.findAll({
-        where: {
-            userId,
-        },
-        limit: normLimit,
-        offset: normOffset,
-    });
+    if (!user) throw new AppError(errorTypes.NOT_FOUND, "User not exist");
+
+    const isAlreadyFollow = await user.hasFollower(follower);
+
+    if (isAlreadyFollow) throw new AppError(errorTypes.ALREADY_EXIST, "You already follow by this user");
+
+    await user.addFollower(follower);
 }
 
-const getFollowList = (userId) => {
-    const follows = db.Followers.findAll({
-        where: { followerId: userId },
-        attributes: ['userId'],
-    });
-    return follows;
-};
+const stopFollow = async (follower, id) => {
+    const user = await userRepository.findUser({ id });
 
-const addFollower = async (followerId, userId) => {
-    const query = { followerId, userId };
-    const follow = await db.Followers.findOne({
-        where: query,
-    });
+    if (!user) throw new AppError(errorTypes.NOT_FOUND, "User not exist");
 
-    if (follow) {
-        return null;
-    }
+    const isAlreadyFollow = await user.hasFollower(follower);
 
-    return db.Followers.create(query);
+    if (!isAlreadyFollow) throw new AppError(errorTypes.ALREADY_EXIST, "You don`t follow by this user");
+
+    await user.removeFollower(follower);
 }
 
-const removeFollower = async (followerId, userId) => {
-    const query = { followerId, userId };
-    const remFollower = await db.Users.findOne({
-        where: {
-            id: query.followerId,
-        },
-    });
-
-    if (!remFollower) {
-        return null;
-    }
-
-    await db.Followers.destroy({
-        where: query,
-    });
-
-    return remFollower.id;
-}
-
-const userServices = {
-    signUp,
+export default {
+    createUser,
     logIn,
-    getCurrentUser,
     updateUser,
-    addFollower,
-    removeFollower,
-    getFollowers,
-    getFollowList,
-    getUser,
+    startFollow,
+    stopFollow,
     updateUserAvatar,
 };
-
-export default userServices;
 

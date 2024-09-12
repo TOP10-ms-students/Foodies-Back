@@ -1,22 +1,26 @@
-import gravatar from "gravatar";
-import ctrlWrapper from "../middleware/ctrlWrapper.js";
+import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import userServices from "../services/usersServices.js";
-
+import { UniqueConstraintError } from "sequelize";
+import { ApiError } from "../errors/apiError.js";
 
 const signUp = async (req, res) => {
-    const {...userData} = req.body;
-    const gravatarUrl = gravatar.url(userData.email, {s: "250"}, true);
-    const newUser = await userServices.signUp({ ...userData, avatar: gravatarUrl, });
-    res.status(201).json({
-        user: {
-            name: newUser.name,
-            email: newUser.email,
-        },
-    });
+    try {
+        const newUser = await userServices.createUser(req.body);
+
+        res.status(201).json({
+            user: {
+                name: newUser.name,
+                email: newUser.email,
+            },
+        });
+    } catch (error) {
+        if (error instanceof UniqueConstraintError) throw new ApiError(409, 'Email in use');
+    }
 }
 
-const logIn = async (req, res) => {
+const signIn = async (req, res) => {
     const user = await userServices.logIn(req.body);
+
     res.json({
         user: {
             name: user.name,
@@ -28,23 +32,13 @@ const logIn = async (req, res) => {
 }
 
 const logOut = async (req, res) => {
-    const {id} = req.user;
-    await userServices.updateUser(id, { token: null });
-    res.status(204).send();
-}
+    await userServices.updateUser(req.user, { token: null });
 
-const getCurrentUser = async(req, res) => {
-    const user = await userServices.getCurrentUser(req.user.id);
-    res.json({
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar,
-    });
+    res.status(204).send();
 }
 
 export default {
     signUp: ctrlWrapper(signUp),
-    logIn: ctrlWrapper(logIn),
+    signIn: ctrlWrapper(signIn),
     logOut: ctrlWrapper(logOut),
-    getCurrentUser: ctrlWrapper(getCurrentUser),
 };

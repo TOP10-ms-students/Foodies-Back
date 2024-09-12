@@ -1,11 +1,10 @@
 import { ApiError } from "../errors/apiError.js";
-import ctrlWrapper from "../middleware/ctrlWrapper.js";
+import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import recipesServices from "../services/recipesServices.js";
-import appConfig from "../config/appConfig.js";
-import db from "../db/models/index.cjs";
+import db from "../db/index.js";
 
 const getAllRecipes = async (req, res) => {
-    const { page = appConfig.DEFAULT_PAGE, limit = appConfig.DEFAULT_LIMIT, category, ingredient, area } = req.query;
+    const { page = 1, limit = 10, category, ingredient, area } = req.query;
 
     const query = {
         category,
@@ -81,15 +80,21 @@ const deleteFavoriteRecipe = async (req, res) => {
 const createRecipe = async (req, res) => {
     const { id: owner } = req.user;
 
-    const newRecipe = await recipesServices.postRecipe({ ...req.body, owner });
+    const { ingredients, ...recipeData } = req.body;
+
+    const newRecipe = await recipesServices.postRecipe({ ...recipeData, owner });
+
+    const newIngredients = await db.RecipeIngredient.bulkCreate(ingredients.map(i => ({ ...i, recipeId: newRecipe.id })));
+
     const [ownerData, categoryData, areaData] = await Promise.all([
-        db.Users.findByPk(newRecipe.owner, { attributes: ["id", "name", "email"] }),
-        db.Categories.findByPk(newRecipe.category, { attributes: ["id", "name"] }),
-        db.Areas.findByPk(newRecipe.area, { attributes: ["id", "name"] }),
+        db.User.findByPk(newRecipe.owner, { attributes: ["id", "name", "email"] }),
+        db.Category.findByPk(newRecipe.category, { attributes: ["id", "name"] }),
+        db.Area.findByPk(newRecipe.area, { attributes: ["id", "name"] }),
     ]);
 
     const recipeWithAssociations = {
         ...newRecipe.toJSON(),
+        ingredients: newIngredients,
         owner: ownerData,
         category: categoryData,
         area: areaData,

@@ -1,12 +1,43 @@
 import { ApiError } from "../errors/apiError.js";
-import ctrlWrapper from "../middleware/ctrlWrapper.js";
+import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import userServices from "../services/usersServices.js";
+import userRepository from "../repository/userRepository.js";
+import { UniqueConstraintError } from "sequelize";
+import { normalizePaginationParams } from "../helpers/normalizePaginationParams.js";
+
+const getCurrentUser = async(req, res) => {
+    const { id, name, email, avatar } = req.user;
+
+    const statistic = await userRepository.getUserStatistics(id, true);
+
+    res.json({
+        user: { name, email, avatar },
+        statistic,
+    });
+}
+
+const getUser = async(req, res) => {
+    const { id } = req.params;
+
+    const user = await userRepository.findUser({ id });
+
+    if (!user) throw new ApiError(404, "User not found");
+
+    const { name, email, avatar } = user;
+
+    const statistic = await userRepository.getUserStatistics(id);
+
+    res.json({
+        user: { name, email, avatar },
+        statistic,
+    });
+}
 
 const getFollowers = async (req, res) => {
-    const { id: userId } = req.params;
+    const { id } = req.params;
     const { page, limit } = req.query;
 
-    const followers = await userServices.getFollowers(userId, page, limit);
+    const followers = await userRepository.findFollowersData(id, normalizePaginationParams(page, limit), 'followers');
 
     res.json({
         followers,
@@ -14,38 +45,44 @@ const getFollowers = async (req, res) => {
 }
 
 const getFollowing = async (req, res) => {
-    const { id: userId } = req.user;
-    const following = await userServices.getFollowList(userId);
+    const { id } = req.user;
+    const { page, limit } = req.query;
+    console.log(id);
+
+    const following = await userRepository.findFollowersData(id, normalizePaginationParams(page, limit));
 
     res.json({
         following,
     });
 }
 
-const addNewFollower = async (req, res) => {
-    const { followerId } = req.params;
-    const { id: userId } = req.user;
+const startFollow = async (req, res) => {
+    const { id: userId } = req.params;
+    const user = req.user;
 
-    if (followerId === userId) {
-        throw new ApiError(400);
+    if (user.id === userId) {
+        throw new ApiError(400, 'You can`t follow by yourself');
     }
 
-    const followerAdd = await userServices.addFollower(followerId, userId);
-    if (!followerAdd) {
-        throw new ApiError(409, "Ready in your list");
-    }
-    res.status(201).json({
-        message: `Follower id: ${followerId} added`,
+    await userServices.startFollow(user, userId);
+
+    res.json({
+        message: 'Success',
     });
 }
 
-const deleteFollower = async (req, res) => {
-    const { followerId } = req.params;
-    const { id: userId } = req.user;
+const stopFollow = async (req, res) => {
+    const { id: userId } = req.params;
+    const user = req.user;
 
-    const delFollowerId = await userServices.removeFollower(followerId, userId);
+    if (user.id === userId) {
+        throw new ApiError(400, 'You can`t follow by yourself');
+    }
+
+    await userServices.stopFollow(user, userId);
+
     res.json({
-        message: `Folower with id:${delFollowerId} removed successful`,
+        message: 'Success',
     });
 }
 
@@ -65,13 +102,12 @@ const addAvatar = async (req, res) => {
     }
 }
 
-
-const userContr = {
+export default {
+    getCurrentUser: ctrlWrapper(getCurrentUser),
+    getUser: ctrlWrapper(getUser),
     getFollowers: ctrlWrapper(getFollowers),
     getFollowing: ctrlWrapper(getFollowing),
-    addNewFollower: ctrlWrapper(addNewFollower),
-    deleteFollower: ctrlWrapper(deleteFollower),
+    startFollow: ctrlWrapper(startFollow),
+    stopFollow: ctrlWrapper(stopFollow),
     addAvatar: ctrlWrapper(addAvatar),
 };
-
-export default userContr;

@@ -1,4 +1,4 @@
-import db from "../db/models/index.cjs";
+import db from "../db/index.js";
 
 export const getIngredients = async () => {
     return await db.Ingredients.findAll();

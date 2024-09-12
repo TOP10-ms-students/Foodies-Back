@@ -1,22 +1,24 @@
 import { Router } from "express";
 import authenticate from "../middleware/authenticate.js";
-import userContr from "../controllers/usersController.js";
+import usersController from "../controllers/usersController.js";
 import upload from "../middleware/upload.js";
 
 const router = Router();
 
 router.use(authenticate);
 
-router.get("/following", userContr.getFollowing);
+router.get("/current", usersController.getCurrentUser);
 
-router.get("/:id/followers", userContr.getFollowers);
+router.get("/following", usersController.getFollowing);
 
-router.post("/:id/follow", userContr.addNewFollower);
+router.get("/:id", usersController.getUser);
 
-router.delete("/:id/follow", userContr.deleteFollower);
+router.get("/:id/followers", usersController.getFollowers);
 
-router.patch("/avatar", upload.single("avatar"), userContr.addAvatar);
+router.post("/:id/follow", usersController.startFollow);
 
-router.patch("/avatar", upload.single("avatar"), userContr.addAvatar);
+router.delete("/:id/follow", usersController.stopFollow);
+
+router.patch("/avatar", upload.single("avatar"), usersController.addAvatar);
 
 export default router;

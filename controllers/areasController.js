@@ -1,13 +1,11 @@
-import ctrlWrapper from "../middleware/ctrlWrapper.js";
-import  areasServices from "../services/areasServices.js";
+import ctrlWrapper from "../helpers/ctrlWrapper.js";
+import areaRepository from "../repository/areaRepository.js";
 
-async function getAllAreas(_, res) {
-    const areas = await areasServices.getAreas();
+const areaList = async (_, res) => {
+    const areas = await areaRepository.findAreas();
     res.json({ areas });
 }
 
-const areasContr = {
-    getAllAreas: ctrlWrapper(getAllAreas),
+export default {
+    areaList: ctrlWrapper(areaList),
 };
-
-export default areasContr;

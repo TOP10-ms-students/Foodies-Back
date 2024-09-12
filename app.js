@@ -4,9 +4,11 @@ import cors from "cors";
 import "dotenv/config";
 
 import appRouter from "./routes/index.js";
-import db from "./db/models/index.cjs";
 import { generateOpenApi } from "./openApiGenerator.js";
 import swaggerUi from "swagger-ui-express";
+import setupDatabase from "./db/scripts/setupDatabase.js";
+
+const { PORT } = process.env;
 
 const app = express();
 
@@ -34,39 +36,8 @@ app.use((err, req, res, next) => {
     console.warn(err);
 });
 
-const server = app.listen(process.env.PORT, () => {
-    console.log("Server is running. Use our API on port: " + process.env.PORT);
+app.listen(PORT, async () => {
+    await setupDatabase();
+
+    console.log(`Server is running. Use our API on port: ${PORT}`);
 });
-
-db.sequelize
-    .authenticate()
-    .then(async () => {
-        console.log("Database connection successful");
-
-        if (process.env.INIT_DATA) {
-            if (process.env.INIT_DATA === "force") {
-                await db.sequelize.sync({ force: true });
-
-                const { initialize } = await import("./db/seeders/initialize-data.js");
-                await initialize(db.sequelize);
-                console.log("Database initialized with data");
-            } else {
-                await db.sequelize.sync({ alter: true });
-                console.log("Database altered");
-            }
-        }
-    })
-    .catch((error) => {
-        console.error("Unable to connect to the database", error);
-
-        closeApp();
-    });
-
-function closeApp() {
-    server.close();
-    server.on("close", () => {
-        db.sequelize.close();
-    });
-}
-
-export { closeApp, app };

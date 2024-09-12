@@ -1,7 +1,7 @@
 import j2s from "joi-to-swagger";
 import * as path from "path";
-import { schemaKey } from "./middleware/validateBody.js";
-import { controllerKey } from "./middleware/ctrlWrapper.js";
+import { schemaKey } from "./helpers/validateBody.js";
+import { controllerKey } from "./helpers/ctrlWrapper.js";
 
 /**
  * This function generates an OpenAPI specification for the given Express application.
