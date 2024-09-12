@@ -1,5 +1,5 @@
 import db, { sequelize } from "../db/index.js";
-import { QueryTypes, Sequelize } from "sequelize";
+import { QueryTypes } from "sequelize";
 
 const getUser = async (query) => {
     return db.User.findOne({ where: query, rejectOnEmpty: true });
@@ -7,14 +7,20 @@ const getUser = async (query) => {
 
 const findUser = async query => db.User.findOne({ where: query });
 
+const getFollowersCount = async (id) => db.Follower.count({
+    where: { userId: id }
+});
+
+const getFollowingCount = async (id) => db.Follower.count({
+    where: { followerId: id }
+});
+
 const getUserStatistics = async (id, personal = false) => {
     const createdRecipeCount = await db.Recipe.count({
         where: { ownerId: id }
     });
 
-    const followersCount = await db.Follower.count({
-        where: { userId: id }
-    });
+    const followersCount = await getFollowersCount(id);
 
     if (!personal) return {
         createdRecipeCount,
@@ -25,9 +31,7 @@ const getUserStatistics = async (id, personal = false) => {
         where: { userId: id }
     });
 
-    const followingCount = await db.Follower.count({
-        where: { followerId: id }
-    });
+    const followingCount = await getFollowingCount(id);
 
     return {
         createdRecipeCount,
@@ -98,4 +102,6 @@ export default {
     findUser,
     getUserStatistics,
     findFollowersData,
+    getFollowersCount,
+    getFollowingCount,
 };
