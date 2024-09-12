@@ -1,7 +1,7 @@
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import categoryRepository from "../repository/categoryRepository.js";
 
-async function categoryList(_, res) {
+async function getCategoryList(_, res) {
     const categories = await categoryRepository.findCategories();
 
     res.json({
@@ -10,5 +10,5 @@ async function categoryList(_, res) {
 }
 
 export default {
-    categoryList: ctrlWrapper(categoryList),
+    getCategoryList: ctrlWrapper(getCategoryList),
 };

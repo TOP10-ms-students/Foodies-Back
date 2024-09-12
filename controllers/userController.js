@@ -48,7 +48,6 @@ const getFollowers = async (req, res) => {
 const getFollowing = async (req, res) => {
     const { id } = req.user;
     const { page, limit } = req.query;
-    console.log(id);
 
     const following = await userRepository.findFollowersData(id, normalizePaginationParams(page, limit));
     const count = await userRepository.getFollowingCount(id);
