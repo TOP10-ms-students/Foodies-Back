@@ -16,6 +16,7 @@ const Testimonial = (sequelize) => {
 
     TestimonialModel.associate = (models) => {
         TestimonialModel.belongsTo(models.User, {
+            as: 'owner',
             foreignKey: {
                 name: 'ownerId',
                 allowNull: false,
