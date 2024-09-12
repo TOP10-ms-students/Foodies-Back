@@ -69,42 +69,22 @@ const deleteFavoriteRecipe = async (req, res) => {
 };
 
 const createRecipe = async (req, res) => {
-    const { id: owner } = req.user;
+    try {
+        const recipe = await recipesServices.createRecipe(req.user, req.body);
 
-    const { ingredients, ...recipeData } = req.body;
-
-    const newRecipe = await recipesServices.postRecipe({ ...recipeData, owner });
-
-    const newIngredients = await db.RecipeIngredient.bulkCreate(ingredients.map(i => ({ ...i, recipeId: newRecipe.id })));
-
-    const [ownerData, categoryData, areaData] = await Promise.all([
-        db.User.findByPk(newRecipe.owner, { attributes: ["id", "name", "email"] }),
-        db.Category.findByPk(newRecipe.category, { attributes: ["id", "name"] }),
-        db.Area.findByPk(newRecipe.area, { attributes: ["id", "name"] }),
-    ]);
-
-    const recipeWithAssociations = {
-        ...newRecipe.toJSON(),
-        ingredients: newIngredients,
-        owner: ownerData,
-        category: categoryData,
-        area: areaData,
-    };
-    res.status(201).json(recipeWithAssociations);
+        res.status(201).json({ recipe });
+    } catch (error) {
+        throw new ApiError(400, 'Invalid data');
+    }
 };
 
 const deleteRecipe = async (req, res) => {
     const { id: userId } = req.user;
-
     const { id: recipeId } = req.params;
 
-    const result = await recipesServices.deleteUserRecipe(userId, recipeId);
+    await recipesServices.deleteRecipe(userId, recipeId);
 
-    if (!result) {
-        return new ApiError(404, `Recipe with id=${recipeId} not found in your recipes`);
-    }
-
-    res.json({ message: "Recipe deleted successfully." });
+    res.json({ message: "Success" });
 };
 
 export default {

@@ -4,7 +4,6 @@ import authenticate from "../middleware/authenticate.js";
 import recipeController from "../controllers/recipeController.js";
 import { createRecipeSchema } from "../schemas/recipesSchemas.js";
 
-const validateRequestBody = validateBody(createRecipeSchema);
 const recipeRouter = Router();
 
 recipeRouter.get("/my", authenticate, recipeController.getMyRecipes);
@@ -23,7 +22,7 @@ recipeRouter.delete(":id/favorite", authenticate, recipeController.deleteFavorit
 
 recipeRouter.post("/:id/favorite", authenticate, recipeController.toggleFavoriteRecipe);
 
-recipeRouter.post("/", authenticate, validateRequestBody, recipeController.createRecipe);
+recipeRouter.post("/", authenticate, validateBody(createRecipeSchema), recipeController.createRecipe);
 
 recipeRouter.get("/", recipeController.getRecipeList);
 

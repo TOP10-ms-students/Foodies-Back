@@ -1,6 +1,6 @@
 import db from "../db/index.js";
 
-const findCategories = () => db.Category.findAll();
+const findCategories = async () => db.Category.findAll();
 
 export default {
     findCategories,
