@@ -23,6 +23,7 @@ const findRecipes = (query = {}, { offset, limit }) => {
             },
         ],
         order: [["id", "desc"]],
+        distinct:true,
         limit,
         offset,
     });
