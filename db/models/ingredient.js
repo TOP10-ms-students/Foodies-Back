@@ -24,8 +24,8 @@ const Ingredient = (sequelize) => {
 
     IngredientModel.associate = (models) => {
         IngredientModel.belongsToMany(models.Recipe, {
-            through: 'RecipeIngredient',
-            as: 'recipes',
+            through: models.RecipeIngredient,
+            as: 'ingredient',
             foreignKey: {
                 name: 'ingredientId',
                 allowNull: false,

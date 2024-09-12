@@ -21,11 +21,10 @@ const getRecipeList = async (req, res) => {
 
 const getOneRecipe = async (req, res) => {
     const { id } = req.params;
-    const result = await recipesServices.getOneRecipe({ id });
-    if (!result) {
-        throw new ApiError(404, `Recipe with id=${id} not found`);
-    }
-    res.json(result);
+
+    const recipe = await recipeRepository.getRecipe({ id });
+
+    res.json({ recipe });
 };
 
 const deleteRecipe = async (req, res) => {
