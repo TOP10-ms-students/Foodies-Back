@@ -1,25 +1,25 @@
 import db from "../db/index.js";
 import { ApiError } from "../errors/apiError.js";
-import { Sequelize } from "sequelize";
+import { EmptyResultError, Sequelize } from "sequelize";
 import clearQueryData from "../helpers/clearQueryData.js";
 
 const findRecipes = (query = {}, { offset, limit }) => {
     const { ingredientId, ...whereCondition } = clearQueryData(query);
 
     return db.Recipe.findAndCountAll({
-        attributes: ["id", "title", "description"],
+        attributes: ["id", "title", "description", "thumb"],
         where: whereCondition,
         include: [
             {
                 model: db.Ingredient,
-                as: 'ingredients',
+                as: "ingredients",
                 where: ingredientId ? { id: ingredientId } : {},
                 attributes: [],
             },
             {
                 model: db.User,
-                as: 'owner',
-                attributes: ["id", "name", "avatar", "email"],
+                as: "owner",
+                attributes: ["id", "name", "avatar"],
             },
         ],
         order: [["id", "desc"]],
@@ -28,17 +28,54 @@ const findRecipes = (query = {}, { offset, limit }) => {
     });
 };
 
-const getOneRecipe = async query => {
+const getRecipe = async query => {
     try {
-        return await db.Recipe.findOne({
+        const data = await db.Recipe.findOne({
+            attributes: ["id", "title", "description", "time", "instructions", "thumb"],
             where: query,
+            include: [
+                {
+                    model: db.Ingredient,
+                    as: "ingredients",
+                    attributes: ["id", "name", "img"],
+                    through: {
+                        attributes: ["measure"],
+                    }
+                },
+                {
+                    model: db.Category,
+                    as: "category",
+                    attributes: ["name"],
+                },
+                {
+                    model: db.User,
+                    as: "owner",
+                    attributes: ["id", "name", "avatar"],
+                },
+            ],
             rejectOnEmpty: true,
-            include: [{ model: db.Ingredient }],
         });
+
+        const recipeJSON = data.toJSON();
+
+        const ingredients = recipeJSON.ingredients.map(ingredient => {
+            return {
+                id: ingredient.id,
+                name: ingredient.name,
+                img: ingredient.img,
+                measure: ingredient.RecipeIngredient ? ingredient.RecipeIngredient.measure : null,
+            };
+        });
+
+        return {
+            ...recipeJSON,
+            ingredients,
+        };
     } catch (error) {
-        if (error instanceof db.Sequelize.EmptyResultError) {
-            throw new ApiError(404, "Recipe not found with the given query");
+        if (error instanceof EmptyResultError) {
+            throw new ApiError(404, "Recipe not found");
         }
+
         throw error;
     }
 };
@@ -84,7 +121,7 @@ const findAllUserRecipes = query => db.Recipe.findAll({ where: query });
 
 export default {
     findRecipes,
-    getOneRecipe,
+    getRecipe,
     listPopularRecipes,
     findAllUserRecipes,
     getFavorites,

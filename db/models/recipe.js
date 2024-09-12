@@ -40,7 +40,17 @@ const Recipe = (sequelize) => {
             onDelete: 'CASCADE',
         });
 
+        RecipeModel.belongsTo(models.Category, {
+            as: 'category',
+            foreignKey: {
+                name: 'categoryId',
+                allowNull: false,
+            },
+            onDelete: 'CASCADE',
+        });
+
         RecipeModel.belongsTo(models.Area, {
+            as: 'area',
             foreignKey: {
                 name: 'areaId',
                 allowNull: false,
