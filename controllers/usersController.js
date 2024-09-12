@@ -2,7 +2,6 @@ import { ApiError } from "../errors/apiError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import userServices from "../services/usersServices.js";
 import userRepository from "../repository/userRepository.js";
-import { UniqueConstraintError } from "sequelize";
 import { normalizePaginationParams } from "../helpers/normalizePaginationParams.js";
 
 const getCurrentUser = async(req, res) => {
@@ -38,8 +37,10 @@ const getFollowers = async (req, res) => {
     const { page, limit } = req.query;
 
     const followers = await userRepository.findFollowersData(id, normalizePaginationParams(page, limit), 'followers');
+    const count = await userRepository.getFollowersCount(id);
 
     res.json({
+        count,
         followers,
     });
 }
@@ -50,8 +51,10 @@ const getFollowing = async (req, res) => {
     console.log(id);
 
     const following = await userRepository.findFollowersData(id, normalizePaginationParams(page, limit));
+    const count = await userRepository.getFollowingCount(id);
 
     res.json({
+        count,
         following,
     });
 }
