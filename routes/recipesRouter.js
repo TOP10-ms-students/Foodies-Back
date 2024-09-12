@@ -1,5 +1,5 @@
 import { Router } from "express";
-import validateBody from "../middleware/validateBody.js";
+import validateBody from "../helpers/validateBody.js";
 import authenticate from "../middleware/authenticate.js";
 import recipesControllers from "../controllers/recipesControllers.js";
 import { createRecipeSchema } from "../schemas/recipesSchemas.js";

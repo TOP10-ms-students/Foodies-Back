@@ -9,6 +9,8 @@ import Category from './models/category.js';
 import Area from './models/area.js';
 import Testimonial from './models/testimonial.js';
 import RecipeIngredient from './models/recipeIngredient.js';
+import FavoriteRecipe from "./models/favoriteRecipe.js";
+import Follower from "./models/follower.js";
 
 const sequelize = new Sequelize(config);
 
@@ -20,10 +22,12 @@ const models = {
     Area: Area(sequelize),
     Testimonial: Testimonial(sequelize),
     RecipeIngredient: RecipeIngredient(sequelize),
+    Follower: Follower(sequelize),
+    FavoriteRecipe: FavoriteRecipe(sequelize),
 };
 
 Object.values(models).forEach(model => {
-    if (typeof model.associate === 'function') {
+    if (model.associate) {
         model.associate(models);
     }
 });

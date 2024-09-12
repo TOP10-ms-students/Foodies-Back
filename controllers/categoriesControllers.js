@@ -1,15 +1,14 @@
-import ctrlWrapper from "../middleware/ctrlWrapper.js";
-import categoriesServices from "../services/categoriesServices.js";
+import ctrlWrapper from "../helpers/ctrlWrapper.js";
+import categoryRepository from "../repository/categoryRepository.js";
 
-async function getAllCategories(_, res) {
-    const allCategories = await categoriesServices.getCategories();
+async function categoryList(_, res) {
+    const categories = await categoryRepository.findCategories();
+
     res.json({
-        categories: allCategories,
+        categories,
     });
 }
 
-const categoriesContr = {
-    getAllCategories: ctrlWrapper(getAllCategories),
+export default {
+    categoryList: ctrlWrapper(categoryList),
 };
-
-export default categoriesContr;

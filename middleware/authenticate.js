@@ -1,8 +1,6 @@
-import jwt from "jsonwebtoken";
 import {ApiError} from "../errors/apiError.js";
-import userServices from "../services/usersServices.js";
-
-const {JWT_SECRET} = process.env;
+import tokenManager from "../helpers/tokenManager.js";
+import userRepository from "../repository/userRepository.js";
 
 const authenticate = async (req, res, next) => {
     const { authorization } = req.headers;
@@ -18,9 +16,10 @@ const authenticate = async (req, res, next) => {
     }
 
     try {
-        const { id } = jwt.verify(token, JWT_SECRET);
-        const user = await userServices.getUser({ id, token });
-        req.user = user;
+        const { id } = tokenManager.decode(token);
+
+        req.user = await userRepository.getUser({ id, token });
+
         next();
     } catch (e) {
         next(new ApiError(401, "Not authorized"));

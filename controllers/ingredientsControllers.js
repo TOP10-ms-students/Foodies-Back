@@ -1,4 +1,4 @@
-import ctrlWrapper from "../middleware/ctrlWrapper.js";
+import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import * as ingredientsServices from "../services/ingredientsServices.js";
 
 const getAllIngredients = async (req, res) => {

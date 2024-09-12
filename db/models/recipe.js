@@ -38,13 +38,7 @@ const Recipe = (sequelize) => {
             },
             onDelete: 'CASCADE',
         });
-        RecipeModel.belongsTo(models.Category, {
-            foreignKey: {
-                name: 'categoryId',
-                allowNull: false,
-            },
-            onDelete: 'CASCADE',
-        });
+
         RecipeModel.belongsTo(models.Area, {
             foreignKey: {
                 name: 'areaId',
@@ -52,8 +46,10 @@ const Recipe = (sequelize) => {
             },
             onDelete: 'CASCADE',
         });
+
         RecipeModel.belongsToMany(models.Ingredient, {
             through: 'RecipeIngredient',
+            as: 'recipes',
             foreignKey: {
                 name: 'recipeId',
                 allowNull: false,
@@ -61,8 +57,10 @@ const Recipe = (sequelize) => {
             otherKey: 'ingredientId',
             onDelete: 'CASCADE',
         });
+
         RecipeModel.belongsToMany(models.User, {
-            through: 'favorite_recipes',
+            through: 'FavoriteRecipe',
+            as: 'recipe',
             foreignKey: {
                 name: 'recipeId',
                 allowNull: false,

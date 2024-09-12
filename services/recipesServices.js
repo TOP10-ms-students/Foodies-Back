@@ -1,14 +1,13 @@
 import { Sequelize } from "sequelize";
 import db from "../db/index.js";
 import { AppError, errorTypes } from "../errors/appError.js";
-import appConfig from "../config/appConfig.js";
 import { ApiError } from "../errors/apiError.js";
 
 const listRecipes = (query = {}, { page: _page, limit: _limit }) => {
     const { category, ingredient, area } = query;
 
-    const page = Number(_page) || appConfig.DEFAULT_PAGE;
-    const limit = Number(_limit) || appConfig.DEFAULT_LIMIT;
+    const page = Number(_page) || 1;
+    const limit = Number(_limit) || 10;
 
     const where = {};
     if (category) {
@@ -38,10 +37,10 @@ const listRecipes = (query = {}, { page: _page, limit: _limit }) => {
 
 const getOneRecipe = async query => {
     try {
-        return await db.Recipes.findOne({
+        return await db.Recipe.findOne({
             where: query,
             rejectOnEmpty: true,
-            include: [{ model: db.Ingredients }],
+            include: [{ model: db.Ingredient }],
         });
     } catch (error) {
         if (error instanceof db.Sequelize.EmptyResultError) {
@@ -51,10 +50,10 @@ const getOneRecipe = async query => {
     }
 };
 
-const postRecipe = data => db.Recipes.create(data);
+const postRecipe = data => db.Recipe.create(data);
 
 const getFavorites = userId => {
-    const favoriteList = db.FavoriteRecipes.findAll({
+    const favoriteList = db.FavoriteRecipe.findAll({
         where: { userId },
     });
 
@@ -62,7 +61,7 @@ const getFavorites = userId => {
 };
 
 const listPopularRecipes = ({ limit }) => {
-    return db.Recipes.findAll({
+    return db.Recipe.findAll({
         attributes: [
             "id",
             "title",
@@ -77,7 +76,7 @@ const listPopularRecipes = ({ limit }) => {
         ],
         include: [
             {
-                model: db.Users,
+                model: db.User,
                 attributes: ["id", "name", "avatar", "email"],
                 through: { attributes: [] },
                 require: false,

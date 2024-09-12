@@ -3,6 +3,6 @@ import testimonialsController from "../controllers/testimonialsController.js";
 
 const testimonialsRouter = Router();
 
-testimonialsRouter.get("/", testimonialsController.getAllTestimonials);
+testimonialsRouter.get("/", testimonialsController.testimonialList);
 
 export default testimonialsRouter;

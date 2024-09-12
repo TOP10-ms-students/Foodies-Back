@@ -37,14 +37,17 @@ const User = (sequelize) => {
 
     UserModel.associate = (models) => {
         UserModel.hasMany(models.Recipe, {
+            as: 'createdRecipes',
             foreignKey: {
                 name: 'ownerId',
                 allowNull: false,
             },
             onDelete: 'CASCADE',
         });
+
         UserModel.belongsToMany(models.Recipe, {
-            through: 'favorite_recipes',
+            through: models.FavoriteRecipe,
+            as: 'favoriteRecipes',
             foreignKey: {
                 name: 'userId',
                 allowNull: false,
@@ -54,8 +57,8 @@ const User = (sequelize) => {
         });
 
         UserModel.belongsToMany(models.User, {
-            through: 'follower',
-            as: 'followers',
+            through: models.Follower,
+            as: 'follower',
             foreignKey: {
                 name: 'followerId',
                 allowNull: false,
@@ -65,7 +68,7 @@ const User = (sequelize) => {
         });
 
         UserModel.belongsToMany(models.User, {
-            through: 'follower',
+            through: models.Follower,
             as: 'followedBy',
             foreignKey: {
                 name: 'userId',
