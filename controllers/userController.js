@@ -88,20 +88,18 @@ const stopFollow = async (req, res) => {
     });
 }
 
-const addAvatar = async (req, res) => {
-    const { id, avatar: oldPath } = req.user;
+const updateAvatar = async (req, res) => {
+    const file = req.file;
 
-    try {
-        const avatar = await userServices.updateUserAvatar(id, oldPath, req.file);
+    if (!file) throw new ApiError(400, 'Avatar is required');
 
-        res.json({
-            user: {
-                avatar,
-            },
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    const avatar = await userServices.updateAvatar(req.user, file);
+
+    res.json({
+        user: {
+            avatar,
+        },
+    });
 }
 
 export default {
@@ -111,5 +109,5 @@ export default {
     getFollowing: ctrlWrapper(getFollowing),
     startFollow: ctrlWrapper(startFollow),
     stopFollow: ctrlWrapper(stopFollow),
-    addAvatar: ctrlWrapper(addAvatar),
+    updateAvatar: ctrlWrapper(updateAvatar),
 };
