@@ -1,11 +1,14 @@
 import db from "../db/index.js";
 import { AppError, errorTypes } from "../errors/appError.js";
 import recipeRepository from "../repository/recipeRepository.js";
+import cloudinaryStorage from "../helpers/cloudinaryStorage.js";
+import { RECIPE_CLOUDINARY_STORAGE_DIR } from "../constants/recipeConstants.js";
 
-const createRecipe = async (user, data) => {
+const createRecipe = async (user, data, img) => {
     const { ingredients, ...otherData } = data;
 
-    const recipe = await db.Recipe.create({ ...otherData, ownerId: user.id });
+    const thumb = await cloudinaryStorage.upload(img, RECIPE_CLOUDINARY_STORAGE_DIR);
+    const recipe = await db.Recipe.create({ ...otherData, thumb, ownerId: user.id });
 
     await db.RecipeIngredient.bulkCreate(ingredients.map(ingredient => ({ ...ingredient, recipeId: recipe.id })));
 

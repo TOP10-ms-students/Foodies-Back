@@ -17,12 +17,12 @@ const limits = {
     fileSize: 1024 * 1024 * 5,
 };
 
-const fileFilter = (req, file, callback) => {
-    const extension = file.originalname.split(".").pop();
-    if (extension === "exe") {
-        return callback(new ApiError(400, ".exe extension not allowed"));
-    }
-    callback(null, true);
+const fileFilter = (req, file, cb) => {
+    const allowedMimeTypes = ['image/jpeg', 'image/png'];
+
+    if (!allowedMimeTypes.includes(file.mimetype)) return cb(new ApiError(400, 'Invalid file type. Only JPG and PNG files are allowed.'), false);
+
+    cb(null, true);
 };
 
 const upload = multer({ storage, limits, fileFilter });

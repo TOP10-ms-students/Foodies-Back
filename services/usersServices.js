@@ -1,9 +1,10 @@
 import {AppError, errorTypes} from "../errors/appError.js";
 import db from "../db/index.js";
-import { getAvatarPath, removeAvatarFile } from "../helpers/getAvatarPath.js";
 import passwordManager from "../helpers/passwordManager.js";
 import tokenManager from "../helpers/tokenManager.js";
 import userRepository from "../repository/userRepository.js";
+import cloudinaryStorage from "../helpers/cloudinaryStorage.js";
+import { USER_CLOUDINARY_STORAGE_DIR } from "../constants/userConstants.js";
 
 const createUser = async (data) => {
     const {name, email, password: plainPassword} = data;
@@ -35,15 +36,10 @@ const logIn = async (data) => {
 
 export const updateUser = async (user, data) => user.update(data);
 
-const updateUserAvatar = async (userId, oldPath, newFile) => {
-    const avatarExtension = oldPath.split(".").pop();
+const updateAvatar = async (user, file) => {
+    const avatar = await cloudinaryStorage.upload(file, USER_CLOUDINARY_STORAGE_DIR);
 
-    if (["jpg", "jpeg", "png", "gif"].includes(avatarExtension)) {
-        await removeAvatarFile(oldPath);
-    }
-
-    const avatar = await getAvatarPath(newFile);
-    const { avatar: newAvatarURL } = await updateUser(userId, { avatar });
+    const { avatar: newAvatarURL } = await updateUser(user, { avatar });
 
     return newAvatarURL;
 }
@@ -78,6 +74,6 @@ export default {
     updateUser,
     startFollow,
     stopFollow,
-    updateUserAvatar,
+    updateAvatar,
 };
 

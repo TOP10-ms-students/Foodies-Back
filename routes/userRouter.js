@@ -19,6 +19,6 @@ router.post("/:id/follow", userController.startFollow);
 
 router.delete("/:id/follow", userController.stopFollow);
 
-router.patch("/avatar", upload.single("avatar"), userController.addAvatar);
+router.patch("/avatar", upload.single("avatar"), userController.updateAvatar);
 
 export default router;

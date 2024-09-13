@@ -1,7 +1,6 @@
 import { ApiError } from "../errors/apiError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import recipesServices from "../services/recipesServices.js";
-import db from "../db/index.js";
 import { normalizePaginationParams } from "../helpers/normalizePaginationParams.js";
 import recipeRepository from "../repository/recipeRepository.js";
 
@@ -69,8 +68,12 @@ const deleteFavoriteRecipe = async (req, res) => {
 };
 
 const createRecipe = async (req, res) => {
+    const thumb = req.file;
+
+    if (!thumb) throw new ApiError(400, 'Thumb is required');
+
     try {
-        const recipe = await recipesServices.createRecipe(req.user, req.body);
+        const recipe = await recipesServices.createRecipe(req.user, req.body, thumb);
 
         res.status(201).json({ recipe });
     } catch (error) {
