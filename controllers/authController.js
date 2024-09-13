@@ -19,15 +19,11 @@ const signUp = async (req, res) => {
 }
 
 const signIn = async (req, res) => {
-    const user = await userServices.logIn(req.body);
+    const { id, name, email, avatar, token } = await userServices.logIn(req.body);
 
     res.json({
-        user: {
-            name: user.name,
-            email: user.email,
-            avatar: user.avatar,
-        },
-        token: user.token,
+        user: { id, name, email, avatar },
+        token,
     });
 }
 
