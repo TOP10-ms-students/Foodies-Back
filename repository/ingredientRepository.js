@@ -8,8 +8,8 @@ const findIngredients = async (name, { limit, offset }) => {
 
     return await db.Ingredient.findAndCountAll({
         where: whereCondition,
-        attributes: ['id', 'name'],
-        distinct:true,
+        attributes: ["id", "name", "img"],
+        distinct: true,
         limit,
         offset,
     });
