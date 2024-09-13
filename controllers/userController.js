@@ -10,7 +10,7 @@ const getCurrentUser = async(req, res) => {
     const statistic = await userRepository.getUserStatistics(id, true);
 
     res.json({
-        user: { name, email, avatar },
+        user: { id, name, email, avatar },
         statistic,
     });
 }
@@ -27,7 +27,7 @@ const getUser = async(req, res) => {
     const statistic = await userRepository.getUserStatistics(id);
 
     res.json({
-        user: { name, email, avatar },
+        user: { id, name, email, avatar },
         statistic,
     });
 }
