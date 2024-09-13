@@ -94,25 +94,25 @@ const listPopularRecipes = ({ limit }) => {
         attributes: [
             "id",
             "title",
-            "category",
-            "owner",
-            "area",
-            "instructions",
             "description",
             "thumb",
-            "time",
-            [Sequelize.fn("COUNT", Sequelize.col("Users.id")), "favorite_count"],
+            [Sequelize.fn("COUNT", Sequelize.col("favorite.id")), "favorite_count"],
         ],
         include: [
             {
                 model: db.User,
-                attributes: ["id", "name", "avatar", "email"],
-                through: { attributes: [] },
-                require: false,
+                as: 'owner',
+                attributes: ["id", "name", "avatar"],
             },
+            {
+                model: db.User,
+                as: 'favorite',
+                attributes: [],
+                through: { attributes: [] },
+            }
         ],
         subQuery: false,
-        group: ["Recipes.id", "Users.id"],
+        group: ["Recipe.id", "owner.id"],
         order: [[Sequelize.literal("favorite_count"), "DESC"]],
         limit: Number(limit),
     });
