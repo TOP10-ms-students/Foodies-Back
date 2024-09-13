@@ -47,7 +47,7 @@ const User = (sequelize) => {
 
         UserModel.belongsToMany(models.Recipe, {
             through: models.FavoriteRecipe,
-            as: 'favorites',
+            as: 'favoriteRecipes',
             foreignKey: {
                 name: 'userId',
                 allowNull: false,

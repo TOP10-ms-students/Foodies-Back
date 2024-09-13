@@ -13,7 +13,7 @@ const getRecipeList = async (req, res) => {
         ingredientId: ingredient,
     };
 
-    const { count, rows: recipes } = await recipeRepository.findRecipes(query, normalizePaginationParams(page, limit));
+    const { count, rows: recipes } = await recipeRepository.findRecipes(query, normalizePaginationParams(page, limit), req.user);
 
     res.json({ count, recipes });
 };
@@ -21,15 +21,16 @@ const getRecipeList = async (req, res) => {
 const getOneRecipe = async (req, res) => {
     const { id } = req.params;
 
-    const recipe = await recipeRepository.getRecipe({ id });
+    const recipe = await recipeRepository.getRecipe({ id }, req.user);
 
     res.json({ recipe });
 };
 
 const getMyRecipes = async (req, res) => {
-    const { id: ownerId, page, limit } = req.user;
+    const { id: ownerId } = req.user;
+    const { page, limit } = req.query;
 
-    const { count, rows: recipes } = await recipeRepository.findRecipes({ ownerId }, normalizePaginationParams(page, limit));
+    const { count, rows: recipes } = await recipeRepository.findRecipes({ ownerId }, normalizePaginationParams(page, limit), req.user);
 
     res.json({ count, recipes });
 };
@@ -37,34 +38,34 @@ const getMyRecipes = async (req, res) => {
 const getPopularRecipeList = async (req, res) => {
     const { limit = 4 } = req.query;
 
-    const recipes = await recipeRepository.listPopularRecipes({ limit });
+    const recipes = await recipeRepository.popularRecipeList(limit, req.user);
 
     res.json({ recipes });
 };
 
-const getFavoriteRecipes = async (req, res) => {
-    const { id: userId } = req.user;
-    const favoriteList = await recipesServices.getFavorites(userId);
-    res.json({
-        favoriteRecipes: favoriteList,
-    });
+const getFavoriteRecipeList = async (req, res) => {
+    const { id } = req.user;
+    const { page, limit } = req.query;
+
+    const { count, rows: recipes } = await recipeRepository.findFavorites(id, normalizePaginationParams(page, limit));
+
+    res.json({ count, recipes });
 };
 
-const toggleFavoriteRecipe = async (req, res) => {
-    const { id: userId } = req.user;
+const addFavoriteRecipe = async (req, res) => {
     const { id: recipeId } = req.params;
 
-    const favorite = await recipesServices.toggleFavoriteRecipe({ userId, recipeId });
+    await recipesServices.addFavoriteRecipe(req.user, recipeId);
 
-    res.json(favorite);
+    res.json({ message: 'Success' });
 };
 
 const deleteFavoriteRecipe = async (req, res) => {
     const { id: recipeId } = req.params;
-    const { id: owner } = req.user;
 
-    await recipesServices.removeFavoriteRecipe({ id: recipeId, owner });
-    res.json({ success: true });
+    await recipesServices.removeFavoriteRecipe(req.user, recipeId);
+
+    res.json({ message: 'Success' });
 };
 
 const createRecipe = async (req, res) => {
@@ -98,6 +99,6 @@ export default {
     deleteRecipe: ctrlWrapper(deleteRecipe),
     deleteFavoriteRecipe: ctrlWrapper(deleteFavoriteRecipe),
     getMyRecipes: ctrlWrapper(getMyRecipes),
-    getFavoriteRecipes: ctrlWrapper(getFavoriteRecipes),
-    toggleFavoriteRecipe: ctrlWrapper(toggleFavoriteRecipe),
+    getFavoriteRecipeList: ctrlWrapper(getFavoriteRecipeList),
+    addFavoriteRecipe: ctrlWrapper(addFavoriteRecipe),
 };
