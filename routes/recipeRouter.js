@@ -9,7 +9,7 @@ const recipeRouter = Router();
 
 recipeRouter.get("/my", authenticate, recipeController.getMyRecipes);
 
-recipeRouter.get("/popular", recipeController.getPopularRecipes);
+recipeRouter.get("/popular", recipeController.getPopularRecipeList);
 
 recipeRouter.get("/favorite", authenticate, recipeController.getFavoriteRecipes);
 
