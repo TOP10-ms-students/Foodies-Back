@@ -5,12 +5,13 @@ import { normalizePaginationParams } from "../helpers/normalizePaginationParams.
 import recipeRepository from "../repository/recipeRepository.js";
 
 const getRecipeList = async (req, res) => {
-    const { page, limit, category, ingredient, area } = req.query;
+    const { page, limit, category, ingredient, area, owner } = req.query;
 
     const query = {
         categoryId: category,
         areaId: area,
         ingredientId: ingredient,
+        ownerId: owner,
     };
 
     const { count, rows: recipes } = await recipeRepository.findRecipes(query, normalizePaginationParams(page, limit), req.user);
