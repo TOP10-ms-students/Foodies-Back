@@ -44,7 +44,7 @@ const findRecipes = (query = {}, { offset, limit }, currentUser) => {
             },
         ],
         order: [["createdAt", "desc"]],
-        distinct:true,
+        distinct: true,
         limit,
         offset,
     });
