@@ -16,11 +16,10 @@ const createRecipe = async (user, data, img) => {
 };
 
 const deleteRecipe = async (userId, recipeId) => {
-    const recipe = await recipeRepository.findRecipes({ id: recipeId, owner: userId });
+    const recipe = await recipeRepository.findRecipeById(recipeId);
 
-    if (!recipe) {
-        return new AppError(errorTypes.NOT_FOUND, 'Recipe not found');
-    }
+    if (!recipe) throw new AppError(errorTypes.NOT_FOUND, 'Recipe not found');
+    if (recipe.ownerId !== userId) throw new AppError(errorTypes.ALREADY_VERIFIED, 'You can remove only your recipe');
 
     await recipe.destroy();
 };
