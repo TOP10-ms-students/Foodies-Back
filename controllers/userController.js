@@ -17,6 +17,7 @@ const getCurrentUser = async(req, res) => {
 
 const getUser = async(req, res) => {
     const { id } = req.params;
+    const currentUser = req.user;
 
     const user = await userRepository.findUser({ id });
 
@@ -24,11 +25,15 @@ const getUser = async(req, res) => {
 
     const { name, email, avatar } = user;
 
-    const statistic = await userRepository.getUserStatistics(id);
+    const [statistic, isFollowing] = await Promise.all([
+        userRepository.getUserStatistics(id),
+        userRepository.checkIsFollowing(currentUser.id, id),
+    ]);
 
     res.json({
         user: { name, email, avatar },
         statistic,
+        isFollowing,
     });
 }
 
