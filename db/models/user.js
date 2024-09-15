@@ -58,7 +58,7 @@ const User = (sequelize) => {
 
         UserModel.belongsToMany(models.User, {
             through: models.Follower,
-            as: 'follower',
+            as: 'followedBy',
             foreignKey: {
                 name: 'followerId',
                 allowNull: false,
@@ -69,7 +69,7 @@ const User = (sequelize) => {
 
         UserModel.belongsToMany(models.User, {
             through: models.Follower,
-            as: 'followedBy',
+            as: 'follower',
             foreignKey: {
                 name: 'userId',
                 allowNull: false,

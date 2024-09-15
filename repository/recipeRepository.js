@@ -123,7 +123,7 @@ const findFavorites = async (userId, { offset, limit }) => {
             }
         ],
         order: [['favorite', db.FavoriteRecipe, 'createdAt', 'DESC']],
-        distinct:true,
+        distinct: true,
         limit,
         offset,
     });
