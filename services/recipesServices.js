@@ -16,42 +16,41 @@ const createRecipe = async (user, data, img) => {
 };
 
 const deleteRecipe = async (userId, recipeId) => {
-    const recipe = await recipeRepository.findRecipes({ id: recipeId, owner: userId });
+    const recipe = await recipeRepository.findRecipeById(recipeId);
 
-    if (!recipe) {
-        return new AppError(errorTypes.NOT_FOUND, 'Recipe not found');
-    }
+    if (!recipe) throw new AppError(errorTypes.NOT_FOUND, 'Recipe not found');
+    if (recipe.ownerId !== userId) throw new AppError(errorTypes.ALREADY_VERIFIED, 'You can remove only your recipe');
 
     await recipe.destroy();
 };
 
-const toggleFavoriteRecipe = async data => {
-    const { userId, recipeId } = data;
+const addFavoriteRecipe = async (owner, id) => {
+    const recipe = await recipeRepository.findRecipeById(id);
 
-    const existingFavorite = await db.FavoriteRecipe.findOne({
-        where: { userId, recipeId },
-    });
+    if (!recipe) throw new AppError(errorTypes.NOT_FOUND, "Recipe not exist");
 
-    if (existingFavorite) {
-        await db.FavoriteRecipe.destroy({
-            where: { userId, recipeId },
-        });
-        return false;
-    }
+    const isFavorite = await owner.hasFavoriteRecipes(recipe);
 
-    await db.FavoriteRecipe.create(data);
+    if (isFavorite) throw new AppError(errorTypes.ALREADY_EXIST, "This recipe already added to favorite");
+
+    await owner.addFavoriteRecipes(recipe);
 };
 
-const removeFavoriteRecipe = async ({ id, owner }) => {
-    await db.FavoriteRecipe.destroy({
-        where: { recipeId: id, userId: owner },
-    });
-    return true;
+const removeFavoriteRecipe = async (owner, id) => {
+    const recipe = await recipeRepository.findRecipeById(id);
+
+    if (!recipe) throw new AppError(errorTypes.NOT_FOUND, "Recipe not exist");
+
+    const isFavorite = await owner.hasFavoriteRecipes(recipe);
+
+    if (!isFavorite) throw new AppError(errorTypes.ALREADY_EXIST, "This recipe isn`t your favorite");
+
+    await owner.removeFavoriteRecipes(recipe);
 };
 
 export default {
     createRecipe,
     deleteRecipe,
     removeFavoriteRecipe,
-    toggleFavoriteRecipe,
+    addFavoriteRecipe,
 };

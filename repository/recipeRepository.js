@@ -1,13 +1,34 @@
-import db from "../db/index.js";
+import db, { sequelize } from "../db/index.js";
 import { ApiError } from "../errors/apiError.js";
 import { EmptyResultError, Sequelize } from "sequelize";
 import clearQueryData from "../helpers/clearQueryData.js";
 
-const findRecipes = (query = {}, { offset, limit }) => {
+const addIsFavorite = currentUser => [
+    currentUser
+        ? Sequelize.literal(`
+            EXISTS (
+                SELECT 1
+                FROM "favorite_recipes" fr
+                WHERE fr.recipe_id = "Recipe"."id" 
+                AND fr.user_id = ${sequelize.escape(currentUser.id)}
+            )
+        `)
+        : Sequelize.literal(`FALSE`),
+    "isFavorite"
+]
+
+const findRecipes = (query = {}, { offset, limit }, currentUser) => {
     const { ingredientId, ...whereCondition } = clearQueryData(query);
 
     return db.Recipe.findAndCountAll({
-        attributes: ["id", "title", "description", "thumb"],
+        attributes: [
+            "id",
+            "title",
+            "description",
+            "thumb",
+            "createdAt",
+            addIsFavorite(currentUser),
+        ],
         where: whereCondition,
         include: [
             {
@@ -22,17 +43,25 @@ const findRecipes = (query = {}, { offset, limit }) => {
                 attributes: ["id", "name", "avatar"],
             },
         ],
-        order: [["id", "desc"]],
-        distinct:true,
+        order: [["createdAt", "desc"]],
+        distinct: true,
         limit,
         offset,
     });
 };
 
-const getRecipe = async query => {
+const getRecipe = async (query, currentUser) => {
     try {
         const data = await db.Recipe.findOne({
-            attributes: ["id", "title", "description", "time", "instructions", "thumb"],
+            attributes: [
+                "id",
+                "title",
+                "description",
+                "time",
+                "instructions",
+                "thumb",
+                addIsFavorite(currentUser),
+            ],
             where: query,
             include: [
                 {
@@ -81,49 +110,61 @@ const getRecipe = async query => {
     }
 };
 
-const getFavorites = userId => {
-    const favoriteList = db.FavoriteRecipe.findAll({
-        where: { userId },
+const findFavorites = async (userId, { offset, limit }) => {
+    return await db.Recipe.findAndCountAll({
+        attributes: ["id", "title", "description", "thumb"],
+        include: [
+            {
+                model: db.User,
+                as: 'favorite',
+                attributes: [],
+                where: { id: userId },
+                required: true,
+            }
+        ],
+        order: [['favorite', db.FavoriteRecipe, 'createdAt', 'DESC']],
+        distinct:true,
+        limit,
+        offset,
     });
-
-    return favoriteList;
 };
 
-const listPopularRecipes = ({ limit }) => {
+const popularRecipeList = (limit, currentUser) => {
     return db.Recipe.findAll({
         attributes: [
             "id",
             "title",
-            "category",
-            "owner",
-            "area",
-            "instructions",
             "description",
             "thumb",
-            "time",
-            [Sequelize.fn("COUNT", Sequelize.col("Users.id")), "favorite_count"],
+            [Sequelize.fn("COUNT", Sequelize.col("favorite.id")), "favorite_count"],
+            addIsFavorite(currentUser),
         ],
         include: [
             {
                 model: db.User,
-                attributes: ["id", "name", "avatar", "email"],
-                through: { attributes: [] },
-                require: false,
+                as: 'owner',
+                attributes: ["id", "name", "avatar"],
             },
+            {
+                model: db.User,
+                as: 'favorite',
+                attributes: [],
+                through: { attributes: [] },
+            }
         ],
         subQuery: false,
-        group: ["Recipes.id", "Users.id"],
+        group: ["Recipe.id", "owner.id"],
         order: [[Sequelize.literal("favorite_count"), "DESC"]],
         limit: Number(limit),
     });
 };
 
-const findAllUserRecipes = query => db.Recipe.findAll({ where: query });
+const findRecipeById = async id => db.Recipe.findByPk(id);
 
 export default {
     findRecipes,
     getRecipe,
-    listPopularRecipes,
-    findAllUserRecipes,
-    getFavorites,
+    popularRecipeList,
+    findFavorites,
+    findRecipeById,
 };

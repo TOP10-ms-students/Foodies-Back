@@ -2,7 +2,7 @@ import db from "../db/index.js";
 
 const findActualTestimonials = async () => {
     return await db.Testimonial.findAll({
-        attributes: ["id", "testimonial"],
+        attributes: ["id", "testimonial", "createdAt"],
         include: [
             {
                 model: db.User,
@@ -11,7 +11,7 @@ const findActualTestimonials = async () => {
             }
         ],
         limit: 3,
-        order: [["id", "desc"]],
+        order: [["createdAt", "desc"]],
     });
 };
 
