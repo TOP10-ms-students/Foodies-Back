@@ -36,6 +36,7 @@ const findRecipes = (query = {}, { offset, limit }, currentUser) => {
                 as: "ingredients",
                 where: ingredientId ? { id: ingredientId } : {},
                 attributes: [],
+                required: false,
             },
             {
                 model: db.User,
@@ -70,7 +71,8 @@ const getRecipe = async (query, currentUser) => {
                     attributes: ["id", "name", "img"],
                     through: {
                         attributes: ["measure"],
-                    }
+                    },
+                    required: false,
                 },
                 {
                     model: db.Category,
