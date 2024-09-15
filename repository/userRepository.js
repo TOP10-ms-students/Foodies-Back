@@ -18,8 +18,8 @@ const getFollowingCount = async (id) => db.Follower.count({
 const checkIsFollowing = async (currentUserId, userId) => {
     const result = await db.Follower.findOne({
         where: {
-            userId: currentUserId,
-            followerId: userId,
+            userId,
+            followerId: currentUserId,
         },
     });
 
