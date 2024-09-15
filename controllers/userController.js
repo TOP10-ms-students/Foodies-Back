@@ -4,7 +4,7 @@ import userServices from "../services/usersServices.js";
 import userRepository from "../repository/userRepository.js";
 import { normalizePaginationParams } from "../helpers/normalizePaginationParams.js";
 
-const getCurrentUser = async(req, res) => {
+const getCurrentUser = async (req, res) => {
     const { id, name, email, avatar } = req.user;
 
     const statistic = await userRepository.getUserStatistics(id, true);
@@ -18,10 +18,11 @@ const getCurrentUser = async(req, res) => {
             statistic,
         },
     });
-}
+};
 
-const getUser = async(req, res) => {
+const getUser = async (req, res) => {
     const { id } = req.params;
+    const currentUser = req.user;
 
     const user = await userRepository.findUser({ id });
 
@@ -29,7 +30,10 @@ const getUser = async(req, res) => {
 
     const { name, email, avatar } = user;
 
-    const statistic = await userRepository.getUserStatistics(id);
+    const [statistic, isFollowing] = await Promise.all([
+        userRepository.getUserStatistics(id),
+        userRepository.checkIsFollowing(currentUser.id, id),
+    ]);
 
     res.json({
         user: {
@@ -38,22 +42,23 @@ const getUser = async(req, res) => {
             email,
             avatar,
             statistic,
+            isFollowing,
         },
     });
-}
+};
 
 const getFollowers = async (req, res) => {
     const { id } = req.params;
     const { page, limit } = req.query;
 
-    const followers = await userRepository.findFollowersData(id, normalizePaginationParams(page, limit), 'followers');
+    const followers = await userRepository.findFollowersData(id, normalizePaginationParams(page, limit), "followers");
     const count = await userRepository.getFollowersCount(id);
 
     res.json({
         count,
         followers,
     });
-}
+};
 
 const getFollowing = async (req, res) => {
     const { id } = req.user;
@@ -66,42 +71,42 @@ const getFollowing = async (req, res) => {
         count,
         following,
     });
-}
+};
 
 const startFollow = async (req, res) => {
     const { id: userId } = req.params;
     const user = req.user;
 
     if (user.id === userId) {
-        throw new ApiError(400, 'You can`t follow by yourself');
+        throw new ApiError(400, "You can`t follow by yourself");
     }
 
     await userServices.startFollow(user, userId);
 
     res.json({
-        message: 'Success',
+        message: "Success",
     });
-}
+};
 
 const stopFollow = async (req, res) => {
     const { id: userId } = req.params;
     const user = req.user;
 
     if (user.id === userId) {
-        throw new ApiError(400, 'You can`t follow by yourself');
+        throw new ApiError(400, "You can`t follow by yourself");
     }
 
     await userServices.stopFollow(user, userId);
 
     res.json({
-        message: 'Success',
+        message: "Success",
     });
-}
+};
 
 const updateAvatar = async (req, res) => {
     const file = req.file;
 
-    if (!file) throw new ApiError(400, 'Avatar is required');
+    if (!file) throw new ApiError(400, "Avatar is required");
 
     const avatar = await userServices.updateAvatar(req.user, file);
 
@@ -110,7 +115,7 @@ const updateAvatar = async (req, res) => {
             avatar,
         },
     });
-}
+};
 
 export default {
     getCurrentUser: ctrlWrapper(getCurrentUser),

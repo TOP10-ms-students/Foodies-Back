@@ -15,20 +15,32 @@ const getFollowingCount = async (id) => db.Follower.count({
     where: { followerId: id }
 });
 
+const checkIsFollowing = async (currentUserId, userId) => {
+    const result = await db.Follower.findOne({
+        where: {
+            userId: currentUserId,
+            followerId: userId,
+        },
+    });
+
+    return !!result;
+};
+
 const getUserStatistics = async (id, personal = false) => {
     const createdRecipeCount = await db.Recipe.count({
-        where: { ownerId: id }
+        where: { ownerId: id },
     });
 
     const followersCount = await getFollowersCount(id);
 
-    if (!personal) return {
-        createdRecipeCount,
-        followersCount,
-    };
+    if (!personal)
+        return {
+            createdRecipeCount,
+            followersCount,
+        };
 
     const favoriteRecipeCount = await db.FavoriteRecipe.count({
-        where: { userId: id }
+        where: { userId: id },
     });
 
     const followingCount = await getFollowingCount(id);
@@ -41,16 +53,17 @@ const getUserStatistics = async (id, personal = false) => {
     };
 };
 
-const findFollowersData = async (userId, { limit, offset }, type = 'following') => {
-    const dynamicFields = type === 'following'
-        ? {
-            followerTable: 'follower_id',
-            joinUserTable: 'user_id',
-        }
-        : {
-            followerTable: 'user_id',
-            joinUserTable: 'follower_id',
-        };
+const findFollowersData = async (userId, { limit, offset }, type = "following") => {
+    const dynamicFields =
+        type === "following"
+            ? {
+                  followerTable: "follower_id",
+                  joinUserTable: "user_id",
+              }
+            : {
+                  followerTable: "user_id",
+                  joinUserTable: "follower_id",
+              };
 
     const query = `
         SELECT
@@ -96,7 +109,6 @@ const findFollowersData = async (userId, { limit, offset }, type = 'following') 
     });
 };
 
-
 export default {
     getUser,
     findUser,
@@ -104,4 +116,5 @@ export default {
     findFollowersData,
     getFollowersCount,
     getFollowingCount,
+    checkIsFollowing,
 };
