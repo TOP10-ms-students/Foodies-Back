@@ -21,14 +21,7 @@ const findRecipes = (query = {}, { offset, limit }, currentUser) => {
     const { ingredientId, ...whereCondition } = clearQueryData(query);
 
     return db.Recipe.findAndCountAll({
-        attributes: [
-            "id",
-            "title",
-            "description",
-            "thumb",
-            "createdAt",
-            addIsFavorite(currentUser),
-        ],
+        attributes: ["id", "title", "description", "thumb", "createdAt", addIsFavorite(currentUser)],
         where: whereCondition,
         include: [
             {
@@ -36,7 +29,7 @@ const findRecipes = (query = {}, { offset, limit }, currentUser) => {
                 as: "ingredients",
                 where: ingredientId ? { id: ingredientId } : {},
                 attributes: [],
-                required: false,
+                required: true,
             },
             {
                 model: db.User,

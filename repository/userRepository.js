@@ -18,8 +18,8 @@ const getFollowingCount = async (id) => db.Follower.count({
 const checkIsFollowing = async (currentUserId, userId) => {
     const result = await db.Follower.findOne({
         where: {
-            userId: currentUserId,
-            followerId: userId,
+            userId,
+            followerId: currentUserId,
         },
     });
 
@@ -57,12 +57,12 @@ const findFollowersData = async (userId, { limit, offset }, type = "following") 
     const dynamicFields =
         type === "following"
             ? {
-                  followerTable: "user_id",
-                  joinUserTable: "follower_id",
-              }
-            : {
                   followerTable: "follower_id",
                   joinUserTable: "user_id",
+              }
+            : {
+                  followerTable: "user_id",
+                  joinUserTable: "follower_id",
               };
 
     const query = `
